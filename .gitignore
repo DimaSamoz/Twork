@@ -1,0 +1,25 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+*.iml
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+=======
+=======
+>>>>>>> 2e8d348b99966886b2c980cc8941f1bf83e2f711
+*.class
+*.jar
+*.aux
+*.log
+*.pdf
+*.idx
+*.gz
+*.toc
+<<<<<<< HEAD
+>>>>>>> 2e8d348b99966886b2c980cc8941f1bf83e2f711
+=======
+>>>>>>> 2e8d348b99966886b2c980cc8941f1bf83e2f711

@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Twork</string>
+    <string name="app_title">Twork</string>
+    <string name="title_activity_home_screen">Home</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string-array name="Settings">
+        <item>Internet</item>
+        <item>Battery</item>
+        <item>Location</item>
+        <item>Scheduling</item>
+        <item>Account</item>
+        <item>Computations</item>
+        <item>About</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
