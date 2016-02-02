@@ -1,5 +1,6 @@
 package uk.ac.cam.grp_proj.mike.twork;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -9,11 +10,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import uk.ac.cam.grp_proj.mike.data.TworkDBHelper;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private TworkDBHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +28,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("Home");
+        db = new TworkDBHelper(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -36,6 +43,9 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        db.addComputation(213,"lala","idle",23232,312323);
+        db.addJob(213,322,21,21);
+
     }
 
     @Override
@@ -92,6 +102,14 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_achievements) {
             setTitle("Achievements");
+            Cursor cursor = db.readDataFromJobTable();
+            cursor.moveToFirst();
+            int res = cursor.getColumnIndex(TworkDBHelper.TABLE_JOB_DURATION);
+            Log.v("aaa",res+"");
+            int res2 = cursor.getInt(res);
+            Log.v("aaa2",res2+"");
+            Toast toast = Toast.makeText(this, res2+"", Toast.LENGTH_SHORT);
+            toast.show();
 
         } else if (id == R.id.nav_settings) {
             setTitle("Settings");
