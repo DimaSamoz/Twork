@@ -32,20 +32,20 @@ public class TworkDBHelper extends SQLiteOpenHelper{
     private static final String SQL_CREATE_ENTRIES_COMPUTATION_TABLE =
             "CREATE TABLE " + TABLE_COMPUTATION_TABLE_NAME + " (" +
                     TABLE_COMPUTATION_NAME + " TEXT," +
-                    TABLE_COMPUTATION_ID + " INTEGER," +
+                    TABLE_COMPUTATION_ID + " INTEGER PRIMARY KEY," +
                     TABLE_COMPUTATION_STATUS + " TEXT," +
                     TABLE_COMPUTATION_START_TIME + " DATETIME," +
-                    TABLE_COMPUTATION_END_TIME + " DATETIME" + " )";
+                    TABLE_COMPUTATION_END_TIME + " DATETIME" + " );";
 
     private static final String SQL_CREATE_ENTRIES_JOB_TABLE =
             "CREATE TABLE " + TABLE_JOB_TABLE_NAME + " (" +
-                    TABLE_JOB_ID + " INTEGER PRIMARY KEY," +
-                    TABLE_JOB_COMPUTATION_ID + " INTEGER," + " FOREIGN KEY" + "(" +
-                    TABLE_JOB_COMPUTATION_ID + ") REFERENCES " + TABLE_COMPUTATION_TABLE_NAME +
-                    "(_id),"+
-    TABLE_JOB_DURATION + " INTEGER," +
+                    TABLE_JOB_ID + " INTEGER PRIMARY KEY, " +
+                    TABLE_JOB_COMPUTATION_ID + " INTEGER, " +
+                    /*"FOREIGN KEY" + "(" + TABLE_JOB_COMPUTATION_ID + ") " +
+                        "REFERENCES " + TABLE_COMPUTATION_TABLE_NAME + "(" + TABLE_COMPUTATION_ID + "), " +*/
+                    TABLE_JOB_DURATION + " INTEGER, " +
                     TABLE_JOB_NUMBER_OF_BYTES_SENT + " INTEGER," +
-                    TABLE_JOB_NUMBER_OF_BYTES_ANALYSED + " INTEGER" + " )";
+                    TABLE_JOB_NUMBER_OF_BYTES_ANALYSED + " INTEGER" + " );";
 
     public TworkDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
