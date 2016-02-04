@@ -184,6 +184,9 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, settingsFragment).commit();
 
         } else if (id == R.id.nav_share) {
+            setTitle("Share");
+            SocialFragment socialFragment = new SocialFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, socialFragment).commit();
 
         } else if (id == R.id.nav_send) {
 

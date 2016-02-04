@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Twork</string>
     <string name="app_title">Twork</string>
+    <string name="facebook_app_id">755992537863976</string>
     <string name="title_activity_home_screen">Home</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
