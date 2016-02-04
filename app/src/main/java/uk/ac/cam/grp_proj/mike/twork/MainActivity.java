@@ -1,5 +1,7 @@
 package uk.ac.cam.grp_proj.mike.twork;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -20,6 +22,7 @@ import uk.ac.cam.grp_proj.mike.data.TworkDBHelper;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private TworkDBHelper db;
+    SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        db.addComputation(213,"lala","idle",23232,312323);
+        db.addComputation(213,"lala","idle",23232, 312323);
         db.addJob(213,322,21,21);
 
     }

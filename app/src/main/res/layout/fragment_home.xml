@@ -45,51 +45,38 @@
             android:id="@+id/textView2" />
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
             android:layout_marginBottom="6dp">
 
-            <ToggleButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="15dp"
                 android:text="Mobile Data"
-                android:id="@+id/toggleButton"
-                android:textOn="Mobile Data"
-                android:textOff="Mobile Data"
-                android:checked="false"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp" />
+                android:id="@+id/mobileDataSwitch"
+                android:layout_marginBottom="12dp"
+                android:layout_weight="4.79"/>
 
-            <ToggleButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:text="Battery"
-                android:id="@+id/toggleButton2"
-                android:textOn="Battery"
-                android:textOff="Battery"
-                android:checked="false"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp" />
+                android:textSize="15dp"
+                android:id="@+id/batterySwitch"
+                android:layout_marginBottom="12dp"
+                android:layout_weight="4.79"/>
 
-            <ToggleButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:text="Location"
-                android:id="@+id/toggleButton3"
-                android:textOn="Location"
-                android:textOff="Location"
-                android:checked="false"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp" />
+                android:textSize="15dp"
+                android:id="@+id/locationSwitch"
+                android:layout_marginBottom="12dp"
+                android:layout_weight="4.79"/>
+
         </LinearLayout>
     </LinearLayout>
 
