@@ -1,4 +1,4 @@
-package uk.ac.cam.grp_proj.mike.twork;
+package uk.ac.cam.grp_proj.mike.twork_app;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -15,7 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import uk.ac.cam.grp_proj.mike.data.TworkDBHelper;
+import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
