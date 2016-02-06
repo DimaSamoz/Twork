@@ -9,7 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 /**
  * Created by laura on 01/02/16.
  */
-public class TworkDBHelper extends SQLiteOpenHelper{
+public class TworkDBHelper extends SQLiteOpenHelper {
+
+    private static TworkDBHelper instance;
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "tworkDB.db";
@@ -30,7 +32,7 @@ public class TworkDBHelper extends SQLiteOpenHelper{
     public static final String TABLE_JOB_NUMBER_OF_BYTES_ANALYSED = "job_number_of_bytes_analysed";
 
     private static final String SQL_CREATE_ENTRIES_COMPUTATION_TABLE =
-            "CREATE TABLE " + TABLE_COMPUTATION_TABLE_NAME + " (" +
+            "CREATE TABLE " + TABLE_COMPUTATION_TABLE_NAME + " IF NOT EXISTS (" +
                     TABLE_COMPUTATION_NAME + " TEXT," +
                     TABLE_COMPUTATION_ID + " INTEGER PRIMARY KEY," +
                     TABLE_COMPUTATION_STATUS + " TEXT," +
@@ -38,17 +40,22 @@ public class TworkDBHelper extends SQLiteOpenHelper{
                     TABLE_COMPUTATION_END_TIME + " DATETIME" + " );";
 
     private static final String SQL_CREATE_ENTRIES_JOB_TABLE =
-            "CREATE TABLE " + TABLE_JOB_TABLE_NAME + " (" +
+            "CREATE TABLE " + TABLE_JOB_TABLE_NAME + " IF NOT EXISTS (" +
                     TABLE_JOB_ID + " INTEGER PRIMARY KEY, " +
                     TABLE_JOB_COMPUTATION_ID + " INTEGER, " +
-                    /*"FOREIGN KEY" + "(" + TABLE_JOB_COMPUTATION_ID + ") " +
-                        "REFERENCES " + TABLE_COMPUTATION_TABLE_NAME + "(" + TABLE_COMPUTATION_ID + "), " +*/
                     TABLE_JOB_DURATION + " INTEGER, " +
                     TABLE_JOB_NUMBER_OF_BYTES_SENT + " INTEGER," +
                     TABLE_JOB_NUMBER_OF_BYTES_ANALYSED + " INTEGER" + " );";
 
-    public TworkDBHelper(Context context) {
+    private TworkDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static TworkDBHelper getHelper(Context context) {
+        if (instance == null) {
+            instance = new TworkDBHelper(context.getApplicationContext());
+        }
+        return instance;
     }
 
     @Override
