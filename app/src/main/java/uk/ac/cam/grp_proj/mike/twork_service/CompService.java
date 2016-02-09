@@ -76,4 +76,11 @@ public class CompService extends Service {
         thread.start();
     }
 
+    // TODO temporary service bypass
+    public void submitMacAddress(long number) {
+
+    }
+
+
+
 }

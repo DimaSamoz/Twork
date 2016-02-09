@@ -39,13 +39,15 @@ public class HomeFragment extends Fragment {
         mobileDataSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    //TODO
-                    editSharedPreference("mobileDataSwitch", true);
-                } else {
-                    //TODO
-                    editSharedPreference("mobileDataSwitch", false);
-                }
+//                if (isChecked) {
+//                    //TODO
+//                    editSharedPreference("mobileDataSwitch", true);
+//                } else {
+//                    //TODO
+//                    editSharedPreference("mobileDataSwitch", false);
+//                }
+                // Wouldn't this work?
+                editSharedPreference("mobileDataSwitch", isChecked);
 
             }
         });
@@ -95,7 +97,7 @@ public class HomeFragment extends Fragment {
         comps.add("Ray Tracing");
         comps.add("Compute π");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, comps);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, comps);
         ListView listView = (ListView) getView().findViewById(R.id.comp_list);
         listView.setAdapter(adapter);
 
@@ -104,7 +106,7 @@ public class HomeFragment extends Fragment {
     private void editSharedPreference(String name, boolean value) {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(name, value);
-        editor.commit();
+        editor.apply();
 
     }
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".SetupActivity"
+    android:orientation="vertical"
+    android:weightSum="1"
+    android:gravity="center_vertical">
+
+
+    <TextView
+        android:layout_width="333dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Select computations that you want to contribute to"
+        android:id="@+id/textView8"
+        android:gravity="center"
+        android:layout_marginBottom="20dp" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="333dp"
+        android:id="@+id/comps_list_view"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:choiceMode="multipleChoiceModal"
+        android:layout_weight="0.41" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:id="@+id/button2"
+        android:layout_gravity="center_horizontal"
+        android:onClick="compsToDefaults"
+        android:nestedScrollingEnabled="false" />
+</LinearLayout>

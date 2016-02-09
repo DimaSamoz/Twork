@@ -8,7 +8,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="shared_preference">Shared Preference</string>
+    <string name="shared_preference">SharedPreference</string>
+    <string name="first_launch">First Launch</string>
 
     <string-array name="Settings">
         <item>Internet</item>
@@ -22,4 +23,6 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_setup">Setup</string>
+    <string name="user_name">user_name</string>
 </resources>

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +47,7 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView)grid.findViewById(R.id.imageView1);
             textView.setText(name[position]);
             imageView.setImageResource(mThumbIds[position]);
-            imageView.setColorFilter(Color.YELLOW);
+            imageView.setColorFilter(Color.parseColor("#FFEB3B"));
         } else {
             grid = (View) convertView;
         }
