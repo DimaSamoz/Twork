@@ -169,14 +169,16 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_achievements) {
             setTitle("Achievements");
-            Cursor cursor = mDB.readDataFromJobTable();
-            cursor.moveToFirst();
-            int res = cursor.getColumnIndex(TworkDBHelper.TABLE_JOB_DURATION);
-            Log.v("aaa",res+"");
-            int res2 = cursor.getInt(res);
-            Log.v("aaa2",res2+"");
-            Toast toast = Toast.makeText(this, res2+"", Toast.LENGTH_SHORT);
-            toast.show();
+//            Cursor cursor = mDB.readDataFromJobTable();
+//            cursor.moveToFirst();
+//            int res = cursor.getColumnIndex(TworkDBHelper.TABLE_JOB_DURATION);
+//            Log.v("aaa",res+"");
+//            int res2 = cursor.getInt(res);
+//            Log.v("aaa2",res2+"");
+//            Toast toast = Toast.makeText(this, res2+"", Toast.LENGTH_SHORT);
+//            toast.show();
+            AchievementsFragment achievementsFragment = new AchievementsFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, achievementsFragment).commit();
 
         } else if (id == R.id.nav_settings) {
             setTitle("Settings");
