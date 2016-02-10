@@ -8,6 +8,9 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import uk.ac.cam.grp_proj.mike.twork_app.MainActivity;
 import uk.ac.cam.grp_proj.mike.twork_app.R;
 
@@ -15,6 +18,7 @@ import uk.ac.cam.grp_proj.mike.twork_app.R;
  * Created by Dima on 02/02/16.
  */
 public class CompService extends Service {
+    private Queue<Job> pendingJobs = new LinkedList<>();
 
     // Binder given to clients
     private final IBinder mBinder = new CompBinder();
@@ -81,6 +85,9 @@ public class CompService extends Service {
 
     }
 
+    // TODO: use parts of Ben's JobFetchExample
+    private void fetchJobs(String hostName) {
 
+    }
 
 }
