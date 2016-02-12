@@ -28,11 +28,12 @@ public class TworkDBHelper extends SQLiteOpenHelper {
     public static final String TABLE_JOB_COMPUTATION_ID = "job_computation_id";
     public static final String TABLE_JOB_ID = "_id";
     public static final String TABLE_JOB_DURATION = "job_duration";
+    public static final String TABLE_JOB_START_TIME = "job_start_time";
     public static final String TABLE_JOB_NUMBER_OF_BYTES_SENT = "job_number_of_bytes_sent";
     public static final String TABLE_JOB_NUMBER_OF_BYTES_ANALYSED = "job_number_of_bytes_analysed";
 
     private static final String SQL_CREATE_ENTRIES_COMPUTATION_TABLE =
-            "CREATE TABLE " + TABLE_COMPUTATION_TABLE_NAME + " IF NOT EXISTS (" +
+            "CREATE TABLE " + TABLE_COMPUTATION_TABLE_NAME + " (" +
                     TABLE_COMPUTATION_NAME + " TEXT," +
                     TABLE_COMPUTATION_ID + " INTEGER PRIMARY KEY," +
                     TABLE_COMPUTATION_STATUS + " TEXT," +
@@ -40,10 +41,11 @@ public class TworkDBHelper extends SQLiteOpenHelper {
                     TABLE_COMPUTATION_END_TIME + " DATETIME" + " );";
 
     private static final String SQL_CREATE_ENTRIES_JOB_TABLE =
-            "CREATE TABLE " + TABLE_JOB_TABLE_NAME + " IF NOT EXISTS (" +
+            "CREATE TABLE " + TABLE_JOB_TABLE_NAME + " (" +
                     TABLE_JOB_ID + " INTEGER PRIMARY KEY, " +
                     TABLE_JOB_COMPUTATION_ID + " INTEGER, " +
                     TABLE_JOB_DURATION + " INTEGER, " +
+                    TABLE_JOB_START_TIME + " INTEGER, " +
                     TABLE_JOB_NUMBER_OF_BYTES_SENT + " INTEGER," +
                     TABLE_JOB_NUMBER_OF_BYTES_ANALYSED + " INTEGER" + " );";
 
@@ -92,12 +94,13 @@ public class TworkDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void addJob( int computationId, long duration,
+    public void addJob( int computationId, long duration, int startTime,
                        long numberOfBytesSent,long numberOfBytesAnalysed) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(TABLE_JOB_COMPUTATION_ID, computationId);
         values.put(TABLE_JOB_DURATION, duration);
+        values.put(TABLE_JOB_START_TIME, startTime);
         values.put(TABLE_JOB_NUMBER_OF_BYTES_SENT, numberOfBytesSent);
         values.put(TABLE_JOB_NUMBER_OF_BYTES_ANALYSED, numberOfBytesAnalysed);
 
