@@ -1,14 +1,19 @@
 package uk.ac.cam.grp_proj.mike.twork_app;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 
 /**
  * Created by laura on 04/02/16.
@@ -19,9 +24,11 @@ public class ImageAdapter extends BaseAdapter {
             R.drawable.ic_star_black_24dp, R.drawable.ic_star_black_24dp,
             R.drawable.ic_star_black_24dp, R.drawable.ic_star_black_24dp};
 
-    private String[] name = {"lalal","sdsd","sasa","fdfd"};
+    private String[] name = {"First Job","First 10 Jobs","First 50 Jobs","First 100 Jobs"};
+    private int[] values = {1,10,50,100};
 
     private Context mContext;
+    private long numberOfJobs = 0;
 
     public ImageAdapter(Context c) {
         mContext = c;
@@ -47,7 +54,8 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView)grid.findViewById(R.id.imageView1);
             textView.setText(name[position]);
             imageView.setImageResource(mThumbIds[position]);
-            imageView.setColorFilter(Color.parseColor("#FFEB3B"));
+            addDataEntries();
+            if (numberOfJobs >= values[position]) imageView.setColorFilter(Color.parseColor("#FFEB3B"));
         } else {
             grid = (View) convertView;
         }
@@ -57,7 +65,13 @@ public class ImageAdapter extends BaseAdapter {
             public void onClick(View v) {
                 // TODO Make a random message appear: Congrats if the achievement is yellow and
                 // Keep working if it is grey
-                Toast.makeText(v.getContext(), "You Clicked " + name[position], Toast.LENGTH_SHORT).show();
+                if (numberOfJobs >= values[position]) {
+                    if (values[position] > 1) Toast.makeText(v.getContext(), "Congratulations! You have computed " +
+                            values[position] + " jobs", Toast.LENGTH_SHORT).show();
+                    else Toast.makeText(v.getContext(), "Congratulations! You have computed " +
+                            values[position] + " job", Toast.LENGTH_SHORT).show();
+                }else
+                    Toast.makeText(v.getContext(), "Not there yet. Keep tworking!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -73,5 +87,16 @@ public class ImageAdapter extends BaseAdapter {
     @Override
     public Object getItem(int position) {
         return null;
+    }
+
+    private void addDataEntries() {
+        numberOfJobs = 0;
+        TworkDBHelper db = TworkDBHelper.getHelper(mContext);
+        Cursor cursor = db.readDataFromJobTable();
+        cursor.moveToFirst();
+        do {
+            numberOfJobs++;
+        }while(cursor.moveToNext());
+        Log.d("Number of jobs", " "  + numberOfJobs);
     }
 }
