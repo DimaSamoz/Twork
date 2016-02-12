@@ -166,7 +166,8 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_stats) {
             setTitle("Statistics");
-
+            LineChartFragment lineChartFragment = new LineChartFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, lineChartFragment).commit();
 
         } else if (id == R.id.nav_achievements) {
             setTitle("Achievements");

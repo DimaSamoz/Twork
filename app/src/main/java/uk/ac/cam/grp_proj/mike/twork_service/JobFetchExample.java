@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 public class JobFetchExample {
 
 	public static void doJob() throws Throwable {
-		String hostURL = "http://52.35.83.129:9000/";
+		String hostURL = "http://52.11.247.46:9000/";
 
 		//Send GET /available
 		//At some point this will contain JSON about the phone, but it can be empty for now. 

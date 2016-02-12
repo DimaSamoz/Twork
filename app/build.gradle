@@ -29,3 +29,11 @@ dependencies {
     compile files('libs/commons-io-2.4.jar')
     compile files('libs/json-20151123.jar')
 }
+
+repositories {
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    compile 'com.github.PhilJay:MPAndroidChart:v2.0.9'
+}
