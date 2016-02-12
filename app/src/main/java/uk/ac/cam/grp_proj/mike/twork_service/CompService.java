@@ -6,7 +6,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -22,8 +21,11 @@ public class CompService extends Service {
 
     // Binder given to clients
     private final IBinder mBinder = new CompBinder();
+    private Thread thread;
 
     public static final int RUNNING_NOTIFICATION_ID = 51;
+    private int iterLimit;
+    private boolean shouldBeRunning;
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -39,45 +41,72 @@ public class CompService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
 
+        return mBinder;
+    }
+
+    private Notification createNotification() {
         Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         // TODO for some reason the notification is only visible when the app is open
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        Notification notification = new Notification.Builder(this)
+
+        return new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_cached_black_24dp)
                 .setContentTitle("Tworking")
                 .setContentText("Twork computation running...")
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
                 .build();
-
-        startForeground(RUNNING_NOTIFICATION_ID, notification);
-
-        return mBinder;
     }
 
     /** method for clients */
     public void startComputation() {
 
+        // Notification
+        startForeground(RUNNING_NOTIFICATION_ID, createNotification());
+
+        shouldBeRunning = true;
+
+        iterLimit = 500;
+
         // TODO replace with proper code
-        Thread thread = new Thread(new Runnable() {
+        thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
 
-                for (int i = 0; i < 300; i++) {
-                    Log.i("Service", Integer.toString(i));
-
+                while (shouldBeRunning) {
                     try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        JobFetchExample.doJob();
+                    } catch (Throwable throwable) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+
+//                for (int i = 0; i < iterLimit; i++) {
+//                    Log.i("Service", Integer.toString(i));
+//
+//                    try {
+//                        Thread.sleep(500);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
             }
         });
 
         thread.start();
+    }
+
+    public void stopComputation() {
+//        iterLimit = 0;
+        shouldBeRunning = false;
+        stopForeground(true);
     }
 
     // TODO temporary service bypass

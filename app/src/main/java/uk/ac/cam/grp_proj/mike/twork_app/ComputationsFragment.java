@@ -31,7 +31,7 @@ public class ComputationsFragment extends ListFragment {
                 getActivity().setTitle("Add new computation");
                 AddCompFragment settingsFragment = new AddCompFragment();
                 FragmentTransaction fragTran = getActivity().getSupportFragmentManager().beginTransaction();
-                fragTran.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                fragTran.setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out, R.anim.fade_in, R.anim.exit_to_right);
                 fragTran.replace(R.id.fragment_container, settingsFragment).addToBackStack("Computations").commit();
 
             }

@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.NavigationView;
@@ -18,7 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 import uk.ac.cam.grp_proj.mike.twork_service.CompService;
@@ -34,7 +32,6 @@ public class MainActivity extends AppCompatActivity
 
     // Computation service
     CompService mService;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,21 +58,22 @@ public class MainActivity extends AppCompatActivity
         //mDB.addComputation(213, "lala", "idle", 23232, 312323);
         //mDB.addJob(213, 322, 21, 21);
 
+        // Bind to CompService
+        Intent intent = new Intent(this, CompService.class);
+        getApplicationContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        // Bind to CompService
-        Intent intent = new Intent(this, CompService.class);
-        getApplicationContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
 
         // Unbind from the service
         if (mBound) {
@@ -109,9 +107,9 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } /*else {
             super.onBackPressed();
-        }
+        }*/
     }
 
     @Override
@@ -129,15 +127,6 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        Log.i("asdf", String.valueOf(mBound));
-
-        if (mBound) {
-            // Call a method from the LocalService.
-            // However, if this call were something that might hang, then this request should
-            // occur in a separate thread to avoid slowing down the activity performance.
-            mService.startComputation();
-        }
-
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
@@ -145,6 +134,18 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void startComputation() {
+        if (mBound) {
+            mService.startComputation();
+        }
+    }
+
+    public void stopComputation() {
+        if (mBound) {
+            mService.stopComputation();
+        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -198,4 +199,5 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

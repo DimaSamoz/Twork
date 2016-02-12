@@ -44,6 +44,7 @@ public class SetupFinalFragment extends Fragment {
 
                     Intent i = new Intent(getContext().getApplicationContext(),
                             MainActivity.class);
+
                     startActivity(i);
                 }
             }

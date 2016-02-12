@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
@@ -19,14 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.cam.grp_proj.mike.twork_data.Computation;
+import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 
 /**
  * Created by Dima on 04/02/16.
  */
-public class SetupCompsFragment extends Fragment {
+public class SetupCompsFragment extends Fragment implements View.OnClickListener{
 
     private static List<Computation> allComps;
-    private static List<Computation> selectedComps;
     private static ListView listView;
     private static boolean[] checkedState;
 
@@ -37,7 +38,7 @@ public class SetupCompsFragment extends Fragment {
         CheckBox checkBox;
     }
 
-    public class CompsArrayAdapter extends ArrayAdapter<Computation> {
+    public static class CompsArrayAdapter extends ArrayAdapter<Computation> {
         private final Context context;
         private final List<Computation> data;
 
@@ -101,7 +102,7 @@ public class SetupCompsFragment extends Fragment {
 
     public static List<Computation> getSelectedComps() {
 
-        selectedComps = new ArrayList<>();
+        List<Computation> selectedComps = new ArrayList<>();
 
         int count = listView.getCount();
         for (int i = 0; i < count; i++) {
@@ -118,6 +119,9 @@ public class SetupCompsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_setup_comps, container, false);
 
+        Button nextButton = (Button) view.findViewById(R.id.next_button2);
+        nextButton.setOnClickListener(this);
+
         return view;
     }
 
@@ -125,19 +129,46 @@ public class SetupCompsFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        allComps = Computation.getComputations();
-        CompsArrayAdapter adapter = new CompsArrayAdapter(getContext(), allComps);
+        populateList(getContext().getApplicationContext(), getView());
+    }
 
-        listView = (ListView) getView().findViewById(R.id.comps_list_view);
+    public void populateList(final Context context, View view) {
+        allComps = Computation.getComputations();
+        CompsArrayAdapter adapter = new CompsArrayAdapter(context, allComps);
+
+        listView = (ListView) view.findViewById(R.id.comps_list_view);
         listView.setAdapter(adapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        addSelectedToDatabase(getContext().getApplicationContext());
+
+        SetupDefaultsFragment setupDefaultsFragment = new SetupDefaultsFragment();
+        getActivity().getSupportFragmentManager().beginTransaction() // TODO fix animation
+                .setCustomAnimations(R.anim.fade_in, R.anim.exit_to_left)
+                .replace(R.id.setup_fragment_container, setupDefaultsFragment)
+                .commit();
+    }
+
+    public void addSelectedToDatabase(Context context) {
+        List<Computation> selected = SetupCompsFragment.getSelectedComps();
+
+        TworkDBHelper db = TworkDBHelper.getHelper(context);
+
+        for (Computation comp :
+                selected) {
+            //db.addComputation(comp.getId(), comp.getName(), "active", System.currentTimeMillis(), 0);
+            Log.i("SQLite", "added" + comp.getName());
+        }
     }
 
 }
