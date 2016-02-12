@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 
@@ -22,6 +23,7 @@ public class HomeFragment extends Fragment {
     private Switch mobileDataSwitch;
     private Switch batterySwitch;
     private Switch locationSwitch;
+    private ToggleButton compToggle;
     private SharedPreferences sharedPref;
 
     @Override
@@ -32,6 +34,8 @@ public class HomeFragment extends Fragment {
         mobileDataSwitch = (Switch) view.findViewById(R.id.mobileDataSwitch);
         batterySwitch = (Switch) view.findViewById(R.id.batterySwitch);
         locationSwitch = (Switch) view.findViewById(R.id.locationSwitch);
+        compToggle = (ToggleButton) view.findViewById(R.id.toggleButton);
+
         mobileDataSwitch.setChecked(getDataFromSharedPref("mobileDataSwitch"));
         batterySwitch.setChecked(getDataFromSharedPref("batterSwitch"));
         locationSwitch.setChecked(getDataFromSharedPref("locationSwitch"));
@@ -39,41 +43,31 @@ public class HomeFragment extends Fragment {
         mobileDataSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked) {
-//                    //TODO
-//                    editSharedPreference("mobileDataSwitch", true);
-//                } else {
-//                    //TODO
-//                    editSharedPreference("mobileDataSwitch", false);
-//                }
-                // Wouldn't this work?
                 editSharedPreference("mobileDataSwitch", isChecked);
-
             }
         });
 
         locationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    //TODO
-                    editSharedPreference("locationSwitch", true);
-                } else {
-                    //TODO
-                    editSharedPreference("locationSwitch", false);
-                }
+                    editSharedPreference("locationSwitch", isChecked);
             }
         });
 
         batterySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    editSharedPreference("batterSwitch", isChecked);
+            }
+        });
+
+        compToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    //TODO
-                    editSharedPreference("batterSwitch", true);
+                    ((MainActivity) getActivity()).startComputation();
                 } else {
-                    //TODO
-                    editSharedPreference("batterSwitch", false);
+                    ((MainActivity) getActivity()).stopComputation();
                 }
             }
         });

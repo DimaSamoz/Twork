@@ -21,7 +21,7 @@
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="150dp"
             android:id="@+id/comp_list"
             android:layout_gravity="center_horizontal"
             android:choiceMode="none"
@@ -42,41 +42,68 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Quick Settings"
-            android:id="@+id/textView2" />
+            android:id="@+id/textView2"
+            android:layout_marginBottom="8dp" />
 
         <LinearLayout
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp">
+            android:layout_height="match_parent">
 
-            <Switch
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="15dp"
-                android:text="Mobile Data"
-                android:id="@+id/mobileDataSwitch"
-                android:layout_marginBottom="12dp"
-                android:layout_weight="4.79"/>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6">
 
-            <Switch
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Battery"
-                android:textSize="15dp"
-                android:id="@+id/batterySwitch"
-                android:layout_marginBottom="12dp"
-                android:layout_weight="4.79"/>
+                <Switch
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="15dp"
+                    android:text="Mobile Data"
+                    android:id="@+id/mobileDataSwitch"
+                    android:layout_marginBottom="12dp"
+                    android:layout_weight="4.79"/>
 
-            <Switch
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Location"
-                android:textSize="15dp"
-                android:id="@+id/locationSwitch"
-                android:layout_marginBottom="12dp"
-                android:layout_weight="4.79"/>
+                <Switch
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Battery"
+                    android:textSize="15dp"
+                    android:id="@+id/batterySwitch"
+                    android:layout_marginBottom="12dp"
+                    android:layout_weight="4.79"/>
 
+                <Switch
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Location"
+                    android:textSize="15dp"
+                    android:id="@+id/locationSwitch"
+                    android:layout_marginBottom="12dp"
+                    android:layout_weight="4.79"/>
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4">
+
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="-12dp"
+                    android:drawableTop="@drawable/ic_cached_white_24dp"
+                    android:text="New ToggleButton"
+                    android:id="@+id/toggleButton"
+                    android:layout_gravity="center"
+                    android:textOff="Paused"
+                    android:textOn="Running"
+                    android:singleLine="true"
+                    android:minHeight="100dp"
+                    />
+            </FrameLayout>
         </LinearLayout>
     </LinearLayout>
 
