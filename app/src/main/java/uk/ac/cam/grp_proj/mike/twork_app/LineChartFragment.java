@@ -93,7 +93,6 @@ public class LineChartFragment extends Fragment {
         String currentLocalTime = null;
         cursor.moveToFirst();
         do {
-                Log.v("cursor", "here");
                 long value = cursor.getInt(indexTime);
                 DateFormat date = new SimpleDateFormat("dd-MM-yyy");
                 String localTime = date.format(value);
