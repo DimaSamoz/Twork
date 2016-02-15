@@ -41,9 +41,7 @@ public class LineChartFragment extends Fragment {
         chart = (LineChart) view.findViewById(R.id.chart);
         entries = new ArrayList<>();
         labels = new ArrayList<String>();
-        addEntries();
-        addLabels();
-       // addDataEntries();
+        addDataEntries();
         setUpChart();
         return view;
     }
@@ -85,38 +83,35 @@ public class LineChartFragment extends Fragment {
         labels.add("June");
     }
 
-   /* private void addDataEntries() {
-       // numberOfJobs = 0;
+    private void addDataEntries() {
         TworkDBHelper db = TworkDBHelper.getHelper(getContext());
         Cursor cursor = db.readDataFromJobTable();
         int indexTime = cursor.getColumnIndex(TworkDBHelper.TABLE_JOB_START_TIME);
-      //  TworkDBHelper.onUpgrade(this,1,2);
         Log.v("index", "" + indexTime);
-        //cursor.moveToFirst();
         int i = 0;
         int nr = 0;
         String currentLocalTime = null;
+        cursor.moveToFirst();
         do {
-            System.out.println(cursor.moveToFirst());
-            if(cursor != null && cursor.moveToFirst()) {
                 Log.v("cursor", "here");
                 long value = cursor.getInt(indexTime);
-                DateFormat date = new SimpleDateFormat("dd-MM-yyy HH:mm:ss z");
+                DateFormat date = new SimpleDateFormat("dd-MM-yyy");
                 String localTime = date.format(value);
                 if (localTime.equals(currentLocalTime)) {
                     nr++;
                 } else {
                     if (currentLocalTime != null) {
+                        Log.v("cursor", "entry" + nr);
                         entries.add(new Entry(nr, i));
                         labels.add(currentLocalTime);
                     }
-                    nr = 0;
+                    nr = 1;
                     currentLocalTime = localTime;
-                }
             }
         }while(cursor.moveToNext());
-        cursor.close();
-       // Log.d("Number of jobs", " " + numberOfJobs);
-    }*/
+        Log.v("cursor", "entry" + nr);
+        entries.add(new Entry(nr, i));
+        labels.add(currentLocalTime);
+    }
 
 }
