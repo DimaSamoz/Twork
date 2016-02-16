@@ -28,20 +28,15 @@ public class JobFetchExample {
     private static long timeout = 1000;
 
     public static void doJob(Context context) throws InterruptedException {
-        String hostURL = "http://52.36.156.147:9000/";
+        String hostURL = "http://52.11.247.46:9000/";
 
-		//Send GET /available
-		//At some point this will contain JSON about the phone, but it can be empty for now.
+        //Send GET /available
+        //At some point this will contain JSON about the phone, but it can be empty for now.
         HttpURLConnection con;
         while (true) {
             try {
-                WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-                WifiInfo info = manager.getConnectionInfo();
-                String mac = info.getMacAddress();
-
                 JSONObject req = new JSONObject();
                 req.accumulate("message", "available");
-                req.accumulate("mac", mac);
                 URL availableURL = new URL(hostURL + "available");
                 con = (HttpURLConnection) availableURL.openConnection();
                 con.connect();
@@ -59,31 +54,19 @@ public class JobFetchExample {
         }
 
 
-		//Get the cookie from the response
-		String cookie = con.getHeaderField("Set-Cookie");
+        //Get the cookie from the response
+        String cookie = con.getHeaderField("Set-Cookie");
 
 
-		for(int i = 0; i< 100; i++) {
+        for(int i = 0; i< 100; i++) {
 
-			/*
-			 * Complete fetch and execute to run on device.
-			 * Lots of error handling code and stuff is needed, but this should work if the server is up.
-			 * This should be running in a loop (with a small delay between each one), ignoring errors.
-			 */
+            /*
+             * Complete fetch and execute to run on device.
+             * Lots of error handling code and stuff is needed, but this should work if the server is up.
+             * This should be running in a loop (with a small delay between each one), ignoring errors.
+             */
 
             try {
-
-                //### The service doesn't need to do this, but it's here for testing
-			    /*
-			    //Add a computation that has one job
-			    URL addComputationURL = new URL(hostURL + "test/add/" + "John_Smith" + "/" + "4");
-			    HttpURLConnection addCon = (HttpURLConnection) addComputationURL.openConnection();
-			    addCon.setRequestMethod("POST");
-			    addCon.connect();
-			    System.out.println("Add computation response: " + addCon.getResponseCode());
-			    */
-                //###
-
                 //Send GET /job with cookie
                 URL jobURL = new URL(hostURL + "job");
                 HttpURLConnection jobCon = (HttpURLConnection) jobURL.openConnection();
@@ -114,14 +97,6 @@ public class JobFetchExample {
                     JSONObject j = new JSONObject(str);
                     String functionName = j.getString("function-class");
                     long jobID = j.getLong("job-id");
-
-                    //Load and instantiate the class
-                    //TerribleURLClassLoader loader = new TerribleURLClassLoader(new URL(hostURL + "test/code/"));
-                    //ClassLoader loader = ClassLoader.getSystemClassLoader();
-                    //Class<?> codeClass = loader.loadClass("uk.ac.cam.grp_proj.mike.twork_service." + functionName);
-                    //		Object o = codeClass.newInstance();
-                    //Method codeToRun = codeClass.getDeclaredMethod("run", new Class<?>[] {InputStream.class, OutputStream.class});
-
 
                     //Get the data for the job
                     URL dataURL = new URL(hostURL + "data/" + Long.toString(jobID));
@@ -167,7 +142,7 @@ public class JobFetchExample {
             catch (IOException e) {
                 Log.e(TAG, "", e);
             }
-		}
-	}
+        }
+    }
 }
 
