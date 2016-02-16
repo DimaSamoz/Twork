@@ -20,6 +20,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by laura on 11/02/16.
@@ -47,55 +48,44 @@ public class LineChartFragment extends Fragment {
     }
 
     private void setUpChart() {
-        LineDataSet dataset = new LineDataSet(entries, "# of Calls");
+        LineDataSet dataset = new LineDataSet(entries, "# of Jobs solved");
+        dataset.setValueTextColor(Color.WHITE);
         dataset.setDrawCubic(true);
         dataset.setColor(Color.WHITE);
         LineData data = new LineData(labels, dataset);
         chart.setData(data);
         XAxis xAxis = chart.getXAxis();
         YAxis yAxis = chart.getAxisLeft();
+        chart.getAxisRight().setTextColor(Color.TRANSPARENT);
         yAxis.setTextColor(Color.WHITE);
         xAxis.setTextColor(Color.WHITE);
         chart.setDrawGridBackground(false);
         chart.setScaleYEnabled(false);
-
+        chart.getLegend().setTextColor(Color.WHITE);
         chart.getAxisLeft().setDrawGridLines(false);
         chart.getAxisRight().setDrawGridLines(false);
         chart.getXAxis().setDrawGridLines(false);
+        chart.setDescription("");
         chart.setBackgroundColor(Color.TRANSPARENT);
-    }
-
-    private void addEntries() {
-        entries.add(new Entry(4f, 0));
-        entries.add(new Entry(8f, 1));
-        entries.add(new Entry(6f, 2));
-        entries.add(new Entry(2f, 3));
-        entries.add(new Entry(18f, 4));
-        entries.add(new Entry(9f, 5));
-    }
-
-    private void addLabels() {
-        labels.add("January");
-        labels.add("February");
-        labels.add("March");
-        labels.add("April");
-        labels.add("May");
-        labels.add("June");
     }
 
     private void addDataEntries() {
         TworkDBHelper db = TworkDBHelper.getHelper(getContext());
         Cursor cursor = db.readDataFromJobTable();
         int indexTime = cursor.getColumnIndex(TworkDBHelper.TABLE_JOB_START_TIME);
+        db.addJob(123,231,System.currentTimeMillis(),344343,4324334);
         Log.v("index", "" + indexTime);
         int i = 0;
         int nr = 0;
         String currentLocalTime = null;
         cursor.moveToFirst();
         do {
-                long value = cursor.getInt(indexTime);
-                DateFormat date = new SimpleDateFormat("dd-MM-yyy");
-                String localTime = date.format(value);
+                long value = Long.parseLong(cursor.getString(indexTime));
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+            String localTime = formatter.format(new Date(value));
+                Log.v("time from table", "date: " + localTime);
+                Log.v("time from table", "value: " + value);
                 if (localTime.equals(currentLocalTime)) {
                     nr++;
                 } else {
@@ -103,6 +93,7 @@ public class LineChartFragment extends Fragment {
                         Log.v("cursor", "entry" + nr);
                         entries.add(new Entry(nr, i));
                         labels.add(currentLocalTime);
+                        i++;
                     }
                     nr = 1;
                     currentLocalTime = localTime;

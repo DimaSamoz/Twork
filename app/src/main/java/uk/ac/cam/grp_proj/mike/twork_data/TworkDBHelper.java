@@ -37,7 +37,7 @@ public class TworkDBHelper extends SQLiteOpenHelper {
                     TABLE_COMPUTATION_NAME + " TEXT," +
                     TABLE_COMPUTATION_ID + " INTEGER PRIMARY KEY," +
                     TABLE_COMPUTATION_STATUS + " TEXT," +
-                    TABLE_COMPUTATION_START_TIME + " DATETIME," +
+                    TABLE_COMPUTATION_START_TIME + " TEXT," +
                     TABLE_COMPUTATION_END_TIME + " DATETIME" + " );";
 
     private static final String SQL_CREATE_ENTRIES_JOB_TABLE =
@@ -45,7 +45,7 @@ public class TworkDBHelper extends SQLiteOpenHelper {
                     TABLE_JOB_ID + " INTEGER PRIMARY KEY, " +
                     TABLE_JOB_COMPUTATION_ID + " INTEGER, " +
                     TABLE_JOB_DURATION + " INTEGER, " +
-                    TABLE_JOB_START_TIME + " INTEGER, " +
+                    TABLE_JOB_START_TIME + " DATETIME, " +
                     TABLE_JOB_NUMBER_OF_BYTES_SENT + " INTEGER," +
                     TABLE_JOB_NUMBER_OF_BYTES_ANALYSED + " INTEGER" + " );";
 
@@ -91,10 +91,10 @@ public class TworkDBHelper extends SQLiteOpenHelper {
         values.put(TABLE_COMPUTATION_END_TIME, endTime);
 
         db.insert(TABLE_COMPUTATION_TABLE_NAME, null, values);
-        db.close();
+    //    db.close();
     }
 
-    public void addJob( int computationId, long duration, int startTime,
+    public void addJob( int computationId, long duration, long startTime,
                        long numberOfBytesSent,long numberOfBytesAnalysed) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -105,7 +105,7 @@ public class TworkDBHelper extends SQLiteOpenHelper {
         values.put(TABLE_JOB_NUMBER_OF_BYTES_ANALYSED, numberOfBytesAnalysed);
 
         db.insert(TABLE_JOB_TABLE_NAME, null, values);
-        db.close();
+      //  db.close();
     }
 
     public Cursor readDataFromComputationTable() {
