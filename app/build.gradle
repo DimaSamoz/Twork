@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
@@ -28,6 +28,7 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
     compile files('libs/commons-io-2.4.jar')
     compile files('libs/json-20151123.jar')
+    compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
 }
 
 repositories {
