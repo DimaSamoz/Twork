@@ -1,6 +1,8 @@
 package uk.ac.cam.grp_proj.mike.twork_service;
 
 import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Debug;
 import android.util.Log;
 
@@ -33,8 +35,13 @@ public class JobFetchExample {
         HttpURLConnection con;
         while (true) {
             try {
+                WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                WifiInfo info = manager.getConnectionInfo();
+                String mac = info.getMacAddress();
+
                 JSONObject req = new JSONObject();
                 req.accumulate("message", "available");
+                req.accumulate("mac", mac);
                 URL availableURL = new URL(hostURL + "available");
                 con = (HttpURLConnection) availableURL.openConnection();
                 con.connect();
