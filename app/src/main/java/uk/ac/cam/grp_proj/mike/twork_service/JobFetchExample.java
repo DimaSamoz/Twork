@@ -26,14 +26,15 @@ import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 public class JobFetchExample {
     private static final String TAG = "JobFetchExample";
     private static long timeout = 1000;
+    private static int retries = 256;
 
     public static void doJob(Context context) throws InterruptedException {
         String hostURL = "http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000";
 
         //Send GET /available
         //At some point this will contain JSON about the phone, but it can be empty for now.
-        HttpURLConnection con;
-        while (true) {
+        HttpURLConnection con = null;
+        for (int i = 0; i < retries; i++) {
             try {
                 WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                 WifiInfo info = manager.getConnectionInfo();
@@ -58,6 +59,10 @@ public class JobFetchExample {
             }
         }
 
+        if (con == null) {
+            Log.e(TAG, "failed to establish connection");
+            return;
+        }
 
         //Get the cookie from the response
         String cookie = con.getHeaderField("Set-Cookie");
