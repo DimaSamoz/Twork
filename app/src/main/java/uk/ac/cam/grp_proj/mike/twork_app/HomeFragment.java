@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,41 +26,27 @@ public class HomeFragment extends Fragment {
     private Switch locationSwitch;
     private ToggleButton compToggle;
     private SharedPreferences sharedPref;
+    private ListView listView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        sharedPref = getActivity().getSharedPreferences(
-                getString(R.string.shared_preference), Context.MODE_PRIVATE);
+
+        listView = (ListView) view.findViewById(R.id.comp_list);
+
+
+        sharedPref = getActivity().getSharedPreferences(String.valueOf(R.string.shared_preference), Context.MODE_PRIVATE);
         mobileDataSwitch = (Switch) view.findViewById(R.id.mobileDataSwitch);
         batterySwitch = (Switch) view.findViewById(R.id.batterySwitch);
         locationSwitch = (Switch) view.findViewById(R.id.locationSwitch);
         compToggle = (ToggleButton) view.findViewById(R.id.toggleButton);
 
-        mobileDataSwitch.setChecked(getDataFromSharedPref("mobileDataSwitch"));
-        batterySwitch.setChecked(getDataFromSharedPref("batterSwitch"));
-        locationSwitch.setChecked(getDataFromSharedPref("locationSwitch"));
+        Log.i("comp_34", String.valueOf(getDataFromSharedPref(String.valueOf(R.string.battery_def))));
 
-        mobileDataSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                editSharedPreference("mobileDataSwitch", isChecked);
-            }
-        });
+        mobileDataSwitch.setChecked(getDataFromSharedPref(String.valueOf(R.string.mobile_def)));
+        batterySwitch.setChecked(getDataFromSharedPref(String.valueOf(R.string.battery_def)));
+        locationSwitch.setChecked(getDataFromSharedPref(String.valueOf(R.string.loc_def)));
 
-        locationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    editSharedPreference("locationSwitch", isChecked);
-            }
-        });
-
-        batterySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    editSharedPreference("batterSwitch", isChecked);
-            }
-        });
 
         compToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -76,8 +63,7 @@ public class HomeFragment extends Fragment {
     }
 
     private boolean getDataFromSharedPref(String name) {
-        boolean value = sharedPref.getBoolean(name, false);
-        return value;
+        return sharedPref.getBoolean(name, false);
     }
 
     @Override
@@ -92,15 +78,9 @@ public class HomeFragment extends Fragment {
         comps.add("Compute π");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, comps);
-        ListView listView = (ListView) getView().findViewById(R.id.comp_list);
         listView.setAdapter(adapter);
 
     }
 
-    private void editSharedPreference(String name, boolean value) {
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(name, value);
-        editor.apply();
 
-    }
 }

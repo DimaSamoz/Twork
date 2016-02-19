@@ -1,6 +1,7 @@
 package uk.ac.cam.grp_proj.mike.twork_app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -14,7 +15,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,10 +129,10 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        populateList(getContext().getApplicationContext(), getView());
+        populateList(getContext(), getView(), R.id.setup_fragment_container);
     }
 
-    public void populateList(final Context context, View view) {
+    public void populateList(final Context context, View view, @android.support.annotation.IdRes final int fragmentContainer) {
         allComps = Computation.getComputations();
         CompsArrayAdapter adapter = new CompsArrayAdapter(context, allComps);
 
@@ -143,14 +143,17 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, CompDetailActivity.class);
+                intent.putExtra(CompDetailFragment.ARG_ITEM_ID, position);
+
+                context.startActivity(intent);
             }
         });
     }
 
     @Override
     public void onClick(View v) {
-        addSelectedToDatabase(getContext().getApplicationContext());
+        addSelectedToDatabase(this.getContext());
 
         SetupDefaultsFragment setupDefaultsFragment = new SetupDefaultsFragment();
         getActivity().getSupportFragmentManager().beginTransaction() // TODO fix animation
@@ -166,7 +169,7 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
 
         for (Computation comp :
                 selected) {
-            //db.addComputation(comp.getId(), comp.getName(), "active", System.currentTimeMillis(), 0);
+            db.addComputation(comp.getId(), comp.getName(), "active", System.currentTimeMillis(), 0);
             Log.i("SQLite", "added" + comp.getName());
         }
     }

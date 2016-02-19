@@ -78,7 +78,7 @@ public class CompService extends Service {
 
                 while (shouldBeRunning) {
                     try {
-                        JobFetchExample.doJob();
+                        JobFetchExample.doJob(CompService.this);
                     } catch (Throwable throwable) {
                         try {
                             Thread.sleep(1000);

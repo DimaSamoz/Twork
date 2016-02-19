@@ -28,6 +28,7 @@ public class ComputationsFragment extends ListFragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ((MainActivity) getActivity()).enteredMenu();
                 getActivity().setTitle("Add new computation");
                 AddCompFragment settingsFragment = new AddCompFragment();
                 FragmentTransaction fragTran = getActivity().getSupportFragmentManager().beginTransaction();
@@ -49,6 +50,7 @@ public class ComputationsFragment extends ListFragment {
     public void onResume() {
         super.onResume();
         // Set title
+        ((MainActivity) getActivity()).exitedMenu();
         getActivity().setTitle("Computations");
     }
 }

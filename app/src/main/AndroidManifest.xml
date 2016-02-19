@@ -41,6 +41,11 @@
             android:name=".SetupActivity"
             android:label="@string/title_activity_setup"
             android:theme="@style/AppTheme"/>
+
+        <activity android:name=".CompDetailActivity"
+            android:label="Computation"
+            android:theme="@style/AppTheme" />
+
     </application>
 
 </manifest>

@@ -34,7 +34,7 @@ public class AddCompFragment extends Fragment implements View.OnClickListener{
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sc.populateList(getContext().getApplicationContext(), getView());
+        sc.populateList(getContext(), getView(), R.id.fragment_container);
     }
 
     @Override

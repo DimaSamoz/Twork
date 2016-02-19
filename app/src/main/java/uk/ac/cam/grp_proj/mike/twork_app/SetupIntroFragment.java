@@ -16,9 +16,13 @@ import android.widget.EditText;
  */
 public class SetupIntroFragment extends Fragment implements View.OnClickListener {
 
+    EditText text;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_setup_intro, container, false);
+
+        text = (EditText) view.findViewById(R.id.setup_name);
 
         Button nextButton = (Button) view.findViewById(R.id.next_button1);
         nextButton.setOnClickListener(this);
@@ -32,7 +36,6 @@ public class SetupIntroFragment extends Fragment implements View.OnClickListener
         switch (v.getId()) {
             case R.id.next_button1: {
                 Log.i("comp", "entered");
-                EditText text = (EditText) getView().findViewById(R.id.setup_name);
 
                 String name = String.valueOf(text.getText());
 
@@ -43,7 +46,7 @@ public class SetupIntroFragment extends Fragment implements View.OnClickListener
 
                     SharedPreferences.Editor editor = sharedPref.edit();
 
-                    editor.putString(getString(R.string.user_name), name);
+                    editor.putString(getString(R.string.user_name), name).apply();
                 }
 
                 SetupCompsFragment setupCompsFragment = new SetupCompsFragment();

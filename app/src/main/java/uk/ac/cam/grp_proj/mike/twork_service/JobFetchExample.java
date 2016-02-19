@@ -1,5 +1,7 @@
 package uk.ac.cam.grp_proj.mike.twork_service;
 
+import android.content.Context;
+
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
@@ -11,10 +13,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 
 public class JobFetchExample {
 
-	public static void doJob() throws Throwable {
+	public static void doJob(Context context) throws Throwable {
 		String hostURL = "http://52.36.156.147:9000/";
 
 		//Send GET /available
@@ -71,6 +74,11 @@ public class JobFetchExample {
 			JSONObject j = new JSONObject(str);
 			String functionName = j.getString("function-class");
 			long jobID = j.getLong("job-id");
+
+			// TODO temporary
+			TworkDBHelper db = TworkDBHelper.getHelper(context);
+
+			db.addJob((int) jobID, 235, 234, 324234, 568657867l, 3254l);
 
 
 			//Load and instantiate the class

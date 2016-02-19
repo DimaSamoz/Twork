@@ -1,6 +1,5 @@
 package uk.ac.cam.grp_proj.mike.twork_app;
 
-import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,10 +16,11 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 
 /**
  * Created by laura on 11/02/16.
@@ -50,7 +50,7 @@ public class LineChartFragment extends Fragment {
     private void setUpChart() {
         LineDataSet dataset = new LineDataSet(entries, "# of Jobs solved");
         dataset.setValueTextColor(Color.WHITE);
-        dataset.setDrawCubic(true);
+//        dataset.setDrawCubic(true);
         dataset.setColor(Color.WHITE);
         LineData data = new LineData(labels, dataset);
         chart.setData(data);
@@ -71,9 +71,18 @@ public class LineChartFragment extends Fragment {
 
     private void addDataEntries() {
         TworkDBHelper db = TworkDBHelper.getHelper(getContext());
+//        db.addJob(1234, 1234, 1234l, 4234, 2345l, 345l);
+//        db.addJob(345, 1234, 1234l, 4234, 2345l, 345l);
+//        db.addJob(456546, 34, 1234l, 4234, 2345l, 345l);
+//        db.addJob(765, 34, 1234l, 4234, 2345l, 345l);
+//        db.addJob(7365, 34, 1234l, 4234, 2345l, 345l);
+//        db.addJob(765, 34, 1234l, 4234, 2345l, 345l);
         Cursor cursor = db.readDataFromJobTable();
         int indexTime = cursor.getColumnIndex(TworkDBHelper.TABLE_JOB_START_TIME);
-        db.addJob(123,231,System.currentTimeMillis(),344343,4324334);
+        db.addJob(123,354, 231,System.currentTimeMillis(),344343,4324334);
+        db.addJob(1423,3584, 231,System.currentTimeMillis(),344343,4324334);
+        db.addJob(1623,3574, 231,System.currentTimeMillis(),344343,4324334);
+        db.addJob(1923,3534, 231,System.currentTimeMillis(),344343,4324334);
         Log.v("index", "" + indexTime);
         int i = 0;
         int nr = 0;

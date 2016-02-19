@@ -31,7 +31,9 @@ public class MainActivity extends AppCompatActivity
     private boolean mBound = false;
 
     // Computation service
-    CompService mService;
+    private CompService mService;
+
+    private boolean isInsideMenu = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,10 +109,15 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } /*else {
-            super.onBackPressed();
-        }*/
+        } else {
+            if (isInsideMenu) {
+                super.onBackPressed();
+            }
+        }
+
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -128,7 +135,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
 
-        //noinspection SimplifiableIfStatement
+//        noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -162,7 +169,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_comps) {
             setTitle("Computations");
             ComputationsFragment compsFragment = new ComputationsFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, compsFragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, compsFragment).addToBackStack("Computations").commit();
 
         } else if (id == R.id.nav_stats) {
             setTitle("Statistics");
@@ -200,5 +207,8 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public void enteredMenu() { isInsideMenu = true; }
+    public void exitedMenu() { isInsideMenu = false; }
 
 }
