@@ -25,7 +25,7 @@ import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 
 public class JobFetchExample {
     private static final String TAG = "JobFetchExample";
-    private static long timeout = 1000;
+    private static long timeout = 100;
     private static int retries = 256;
 
     public static void doJob(Context context) throws InterruptedException {
@@ -42,7 +42,7 @@ public class JobFetchExample {
 
                 JSONObject req = new JSONObject();
                 req.accumulate("message", "available");
-                req.accumulate("mac", mac);
+                req.accumulate("phone-id", mac);
                 URL availableURL = new URL(hostURL + "available");
                 con = (HttpURLConnection) availableURL.openConnection();
                 con.connect();
