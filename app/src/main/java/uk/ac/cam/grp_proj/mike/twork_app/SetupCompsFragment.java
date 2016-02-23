@@ -31,7 +31,9 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
     private static ListView listView;
     private static boolean[] checkedState;
 
-
+    /**
+     * Class for the Viewholder design pattern
+     */
     static class ViewHolder {
         TextView name;
         TextView description;
@@ -55,9 +57,6 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
             ViewHolder vh;
             final Computation comp = data.get(position);
 
-            Log.i("comp", comp.getName() + String.valueOf(comp.isSelected()));
-            Log.i("comp_ch", String.valueOf(comp.isSelected()));
-
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -73,9 +72,11 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
                 vh = (ViewHolder) convertView.getTag();
             }
 
-            vh.checkBox.setTag(position); // This line is important.
 
+            vh.name.setText(comp.getName());
+            vh.description.setText(comp.getDescription());
 
+            vh.checkBox.setTag(position);
             vh.checkBox.setChecked(checkedState[position]);
 
             vh.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -83,18 +84,10 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     comp.setSelected(isChecked);
                     int pos = (int) buttonView.getTag();
-                    Log.i("comp", "is this even called " + String.valueOf(isChecked));
-                    Log.i("comp_position", String.valueOf(position));
                     checkedState[pos] = isChecked;
 
                 }
             });
-
-
-            if (comp != null) {
-                vh.name.setText(comp.getName());
-                vh.description.setText(comp.getDescription());
-            }
 
             return convertView;
         }
@@ -107,7 +100,6 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
         int count = listView.getCount();
         for (int i = 0; i < count; i++) {
             if (checkedState[i]) {
-                Log.i("comp", allComps.get(i).getName());
                 selectedComps.add(allComps.get(i));
             }
         }
@@ -129,10 +121,10 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        populateList(getContext(), getView(), R.id.setup_fragment_container);
+        populateList(getContext(), getView());
     }
 
-    public void populateList(final Context context, View view, @android.support.annotation.IdRes final int fragmentContainer) {
+    public void populateList(final Context context, View view) {
         allComps = Computation.getComputations();
         CompsArrayAdapter adapter = new CompsArrayAdapter(context, allComps);
 
@@ -169,7 +161,7 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
 
         for (Computation comp :
                 selected) {
-            db.addComputation(comp.getId(), comp.getName(), "active", System.currentTimeMillis(), 0);
+            db.addComputation(comp.getId(), comp.getName(), TworkDBHelper.COMP_STATUS_ACTIVE, System.currentTimeMillis(), 0);
             Log.i("SQLite", "added" + comp.getName());
         }
     }

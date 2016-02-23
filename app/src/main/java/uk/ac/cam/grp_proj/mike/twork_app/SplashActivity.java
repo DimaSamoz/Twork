@@ -18,7 +18,7 @@ public class SplashActivity extends AppCompatActivity {
 
         if (firstLaunch) {
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(getString(R.string.first_launch), false); // change this to TRUE and negate the if condition for one launch to see the setup screen every time
+            editor.putBoolean(getString(R.string.first_launch), true); // change this to TRUE and negate the if condition for one launch to see the setup screen every time
             editor.apply();
 
             i = new Intent(getApplicationContext(), SetupActivity.class);

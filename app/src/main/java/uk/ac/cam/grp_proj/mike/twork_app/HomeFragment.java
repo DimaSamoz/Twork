@@ -15,6 +15,9 @@ import android.widget.Switch;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 
 /**
  * Created by Dima on 28/01/16.
@@ -71,11 +74,17 @@ public class HomeFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // TODO Temporary hardcoded values
-        ArrayList<String> comps = new ArrayList<>();
-        comps.add("SETI@home");
-        comps.add("Prime Search");
-        comps.add("Ray Tracing");
-        comps.add("Compute π");
+
+
+
+//        ArrayList<String> comps = new ArrayList<>();
+//        comps.add("SETI@home");
+//        comps.add("Prime Search");
+//        comps.add("Ray Tracing");
+//        comps.add("Compute π");
+
+        TworkDBHelper db = TworkDBHelper.getHelper(getContext());
+        List<String> comps = db.getActiveComps();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, comps);
         listView.setAdapter(adapter);

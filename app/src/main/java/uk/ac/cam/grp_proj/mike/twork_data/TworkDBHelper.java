@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by laura on 01/02/16.
  */
@@ -31,6 +34,11 @@ public class TworkDBHelper extends SQLiteOpenHelper {
     public static final String TABLE_JOB_START_TIME = "job_start_time";
     public static final String TABLE_JOB_NUMBER_OF_BYTES_SENT = "job_number_of_bytes_sent";
     public static final String TABLE_JOB_NUMBER_OF_BYTES_ANALYSED = "job_number_of_bytes_analysed";
+
+    public static final String COMP_STATUS_ACTIVE = "active";
+    public static final String COMP_STATUS_WAITING = "waiting";
+    public static final String COMP_STATUS_COMPLETE = "complete";
+    public static final String COMP_STATUS_ERROR = "error";
 
     private static final String SQL_CREATE_ENTRIES_COMPUTATION_TABLE =
             "CREATE TABLE " + TABLE_COMPUTATION_TABLE_NAME + " (" +
@@ -109,6 +117,27 @@ public class TworkDBHelper extends SQLiteOpenHelper {
       //  db.close();
     }
 
+    public List<String> getActiveComps() {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery =
+                "SELECT " + TABLE_COMPUTATION_NAME +
+                        " FROM " + TABLE_COMPUTATION_TABLE_NAME +
+                        " WHERE " + TABLE_COMPUTATION_STATUS + " = '" + COMP_STATUS_ACTIVE + "';";
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        List<String> activeCompNames = new LinkedList<>();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            activeCompNames.add(cursor.getString(0));
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return activeCompNames;
+
+    }
+
     public Cursor readDataFromComputationTable() {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT  * FROM " + TABLE_COMPUTATION_TABLE_NAME;
@@ -118,7 +147,7 @@ public class TworkDBHelper extends SQLiteOpenHelper {
 
     public Cursor readDataFromJobTable() {
         SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT  * FROM " + TABLE_JOB_TABLE_NAME;
+        String selectQuery = "SELECT  * FROM " + TABLE_JOB_TABLE_NAME + " ORDER BY " + TABLE_JOB_START_TIME + ";";
         Cursor cursor = db.rawQuery(selectQuery, null);
         return cursor;
     }

@@ -52,7 +52,7 @@ public class CompService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         return new Notification.Builder(this)
-                .setSmallIcon(R.drawable.ic_cached_black_24dp)
+                .setSmallIcon(R.drawable.ic_not_icon)
                 .setContentTitle("Tworking")
                 .setContentText("Twork computation running...")
                 .setContentIntent(pendingIntent)

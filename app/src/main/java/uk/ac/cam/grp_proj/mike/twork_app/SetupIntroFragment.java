@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,14 +19,29 @@ import android.widget.EditText;
 public class SetupIntroFragment extends Fragment implements View.OnClickListener {
 
     EditText text;
+    Button nextButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_setup_intro, container, false);
 
         text = (EditText) view.findViewById(R.id.setup_name);
+        nextButton = (Button) view.findViewById(R.id.next_button1);
 
-        Button nextButton = (Button) view.findViewById(R.id.next_button1);
+        text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                boolean textReady = text.getText().length() > 0;
+                nextButton.setEnabled(textReady);
+            }
+        });
+
         nextButton.setOnClickListener(this);
 
         return view;
@@ -32,10 +49,8 @@ public class SetupIntroFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        Log.i("comp", "onClick");
         switch (v.getId()) {
             case R.id.next_button1: {
-                Log.i("comp", "entered");
 
                 String name = String.valueOf(text.getText());
 
@@ -51,8 +66,9 @@ public class SetupIntroFragment extends Fragment implements View.OnClickListener
 
                 SetupCompsFragment setupCompsFragment = new SetupCompsFragment();
                 getActivity().getSupportFragmentManager().beginTransaction() // TODO fix animation
-                        .setCustomAnimations(R.anim.fade_in, R.anim.exit_to_left)
+                        .setCustomAnimations(R.anim.fade_in, R.anim.exit_to_left, R.anim.enter_from_right, R.anim.fade_out)
                         .replace(R.id.setup_fragment_container, setupCompsFragment)
+                        .addToBackStack("Intro")
                         .commit();
             }
             break;
