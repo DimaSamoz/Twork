@@ -122,12 +122,13 @@ public class JobFetchExample {
                     //Run the job
                     //codeToRun.invoke(o, jobInput, jobOutput);
 
-                    SecurityManager oldSM = System.getSecurityManager();
-                    HashSet<String> filePaths = new HashSet<>();
+                    // We're not supporting class loading, so the SecurityManager is not needed.
+                    //SecurityManager oldSM = System.getSecurityManager();
+                    //HashSet<String> filePaths = new HashSet<>();
                     // TODO: give some scratch space
-                    System.setSecurityManager(new WorkSecurityManager(filePaths));
+                    //System.setSecurityManager(new WorkSecurityManager(filePaths));
                     new PrimeComputationCode().run(jobInput, jobOutput);
-                    System.setSecurityManager(oldSM);
+                    //System.setSecurityManager(oldSM);
 
                     //Get the output from the job
                     String outStr = new String(jobOutput.toByteArray(), StandardCharsets.UTF_8);
