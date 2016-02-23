@@ -91,7 +91,7 @@ public class TworkDBHelper extends SQLiteOpenHelper {
         values.put(TABLE_COMPUTATION_END_TIME, endTime);
 
         db.insert(TABLE_COMPUTATION_TABLE_NAME, null, values);
-        db.close();
+     //   db.close();
     }
 
     public void addJob( int computationId, int jobId, long duration, long startTime,
