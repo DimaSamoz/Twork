@@ -118,8 +118,9 @@ public class TworkDBHelper extends SQLiteOpenHelper {
 
     public Cursor readDataFromJobTable() {
         SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT  * FROM " + TABLE_JOB_TABLE_NAME;
-        Cursor cursor = db.rawQuery(selectQuery, null);
+        String selectQueryOrdered = "SELECT  * FROM " + TABLE_JOB_TABLE_NAME + " ORDER BY " +
+                TABLE_JOB_START_TIME + ";";
+        Cursor cursor = db.rawQuery(selectQueryOrdered, null);
         return cursor;
     }
 }
