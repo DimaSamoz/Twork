@@ -29,7 +29,7 @@ public class JobFetchExample {
     private static int retries = 256;
 
     public static void doJob(Context context) throws InterruptedException {
-        String hostURL = "http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000";
+        String hostURL = "http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000/";
 
         //Send GET /available
         //At some point this will contain JSON about the phone, but it can be empty for now.
