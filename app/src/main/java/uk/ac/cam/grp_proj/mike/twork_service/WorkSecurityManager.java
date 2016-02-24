@@ -28,7 +28,7 @@ class WorkSecurityManager extends SecurityManager {
 
     @Override
     public void checkPermission(Permission p) throws SecurityException {
-        if (this.filePaths.contains(p.getName()) && actions.contains(p.getActions()))
+        if (this.filePaths.contains(p.getName()) && this.actions.contains(p.getActions()))
             return;
         throw new SecurityException("Sandboxed code requested forbidden permission");
     }
