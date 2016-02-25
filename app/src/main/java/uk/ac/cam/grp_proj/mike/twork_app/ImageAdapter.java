@@ -21,12 +21,12 @@ import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 public class ImageAdapter extends BaseAdapter {
     // references to our images
     private Integer[] mThumbIds = {
-            R.drawable.ic_star_black_24dp, R.drawable.ic_star_black_24dp,
-            R.drawable.ic_star_black_24dp, R.drawable.ic_star_black_24dp,
-            R.drawable.ic_star_black_24dp, R.drawable.ic_star_black_24dp,
-            R.drawable.ic_star_black_24dp, R.drawable.ic_star_black_24dp,
-            R.drawable.ic_star_black_24dp, R.drawable.ic_star_black_24dp,
-            R.drawable.ic_star_black_24dp, R.drawable.ic_star_black_24dp};
+            R.drawable.ic_grade_24dp, R.drawable.ic_grade_24dp,
+            R.drawable.ic_grade_24dp, R.drawable.ic_grade_24dp,
+            R.drawable.ic_grade_24dp, R.drawable.ic_grade_24dp,
+            R.drawable.ic_grade_24dp, R.drawable.ic_grade_24dp,
+            R.drawable.ic_grade_24dp, R.drawable.ic_grade_24dp,
+            R.drawable.ic_grade_24dp, R.drawable.ic_grade_24dp};
 
     private String[] name = {"First Job","First 10 Jobs","First 50 Jobs","First 100 Jobs",
                             "First 500 Jobs","First 1000 Jobs","First 5000 Jobs",
