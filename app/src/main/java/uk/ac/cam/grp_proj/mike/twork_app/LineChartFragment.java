@@ -1,5 +1,6 @@
 package uk.ac.cam.grp_proj.mike.twork_app;
 
+import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -27,9 +28,9 @@ import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
  */
 public class LineChartFragment extends Fragment {
 
-    LineChart chart;
-    ArrayList<Entry> entries;
-    ArrayList<String> labels;
+    private LineChart chart;
+    private ArrayList<Entry> entries;
+    private ArrayList<String> labels;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -48,9 +49,8 @@ public class LineChartFragment extends Fragment {
     }
 
     private void setUpChart() {
-        LineDataSet dataset = new LineDataSet(entries, "# of Jobs solved");
+        LineDataSet dataset = new LineDataSet(entries, "Number of Jobs solved");
         dataset.setValueTextColor(Color.WHITE);
-//        dataset.setDrawCubic(true);
         dataset.setColor(Color.WHITE);
         LineData data = new LineData(labels, dataset);
         chart.setData(data);
@@ -59,6 +59,8 @@ public class LineChartFragment extends Fragment {
         chart.getAxisRight().setTextColor(Color.TRANSPARENT);
         yAxis.setTextColor(Color.WHITE);
         xAxis.setTextColor(Color.WHITE);
+        chart.setVisibleXRange(10);
+        chart.setClickable(false);
         chart.setDrawGridBackground(false);
         chart.setScaleYEnabled(false);
         chart.getLegend().setTextColor(Color.WHITE);
@@ -71,26 +73,18 @@ public class LineChartFragment extends Fragment {
 
     private void addDataEntries() {
         TworkDBHelper db = TworkDBHelper.getHelper(getContext());
-//        db.addJob(1234, 1234, 1234l, 4234, 2345l, 345l);
-//        db.addJob(345, 1234, 1234l, 4234, 2345l, 345l);
-//        db.addJob(456546, 34, 1234l, 4234, 2345l, 345l);
-//        db.addJob(765, 34, 1234l, 4234, 2345l, 345l);
-//        db.addJob(7365, 34, 1234l, 4234, 2345l, 345l);
-//        db.addJob(765, 34, 1234l, 4234, 2345l, 345l);
         Cursor cursor = db.readDataFromJobTable();
         int indexTime = cursor.getColumnIndex(TworkDBHelper.TABLE_JOB_START_TIME);
         db.addJob(354, 123, 231,System.currentTimeMillis(),344343,4324334);
         db.addJob(3584, 1423, 231,System.currentTimeMillis(),344343,4324334);
-        db.addJob(3574, 1623, 231,System.currentTimeMillis(),344343,4324334);
-        db.addJob(3534, 1923, 231,System.currentTimeMillis(),344343,4324334);
         Log.v("index", "" + indexTime);
         int i = 0;
         int nr = 0;
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String currentLocalTime = null;
         cursor.moveToFirst();
         do {
                 long value = Long.parseLong(cursor.getString(indexTime));
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
             String localTime = formatter.format(new Date(value));
                 Log.v("time from table", "date: " + localTime);
@@ -109,6 +103,7 @@ public class LineChartFragment extends Fragment {
             }
         }while(cursor.moveToNext());
         Log.v("cursor", "entry" + nr);
+        Log.v("cursor", "entry " + currentLocalTime);
         entries.add(new Entry(nr, i));
         labels.add(currentLocalTime);
     }

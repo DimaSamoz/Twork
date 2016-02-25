@@ -22,10 +22,17 @@ public class ImageAdapter extends BaseAdapter {
     // references to our images
     private Integer[] mThumbIds = {
             R.drawable.ic_star_black_24dp, R.drawable.ic_star_black_24dp,
+            R.drawable.ic_star_black_24dp, R.drawable.ic_star_black_24dp,
+            R.drawable.ic_star_black_24dp, R.drawable.ic_star_black_24dp,
+            R.drawable.ic_star_black_24dp, R.drawable.ic_star_black_24dp,
+            R.drawable.ic_star_black_24dp, R.drawable.ic_star_black_24dp,
             R.drawable.ic_star_black_24dp, R.drawable.ic_star_black_24dp};
 
-    private String[] name = {"First Job","First 10 Jobs","First 50 Jobs","First 100 Jobs"};
-    private int[] values = {1,10,50,100};
+    private String[] name = {"First Job","First 10 Jobs","First 50 Jobs","First 100 Jobs",
+                            "First 500 Jobs","First 1000 Jobs","First 5000 Jobs",
+                            "First 10000 Jobs", "First 15000 Jobs", "First 30000 Jobs",
+                            "First 50000 Jobs",  "First 100000 Jobs"};
+    private int[] values = {1,10,50,100,500,1000,5000,10000,15000,30000,50000,100000};
 
     private Context mContext;
     private long numberOfJobs = 0;

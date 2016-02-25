@@ -175,6 +175,7 @@ public class MainActivity extends AppCompatActivity
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
                             .replace(R.id.fragment_container, homeFragment)
+                            .addToBackStack("Home")
                             .commit();
 
                 } else if (id == R.id.nav_comps) {
@@ -192,6 +193,7 @@ public class MainActivity extends AppCompatActivity
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
                             .replace(R.id.fragment_container, lineChartFragment)
+                            .addToBackStack("Statistics")
                             .commit();
 
                 } else if (id == R.id.nav_achievements) {
@@ -200,6 +202,7 @@ public class MainActivity extends AppCompatActivity
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
                             .replace(R.id.fragment_container, achievementsFragment)
+                            .addToBackStack("Achievements")
                             .commit();
 
                 } else if (id == R.id.nav_settings) {
@@ -208,6 +211,7 @@ public class MainActivity extends AppCompatActivity
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
                             .replace(R.id.fragment_container, settingsFragment)
+                            .addToBackStack("Settings")
                             .commit();
 
                 } else if (id == R.id.nav_share) {
@@ -216,6 +220,7 @@ public class MainActivity extends AppCompatActivity
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
                             .replace(R.id.fragment_container, socialFragment)
+                            .addToBackStack("Share")
                             .commit();
 
                 } else if (id == R.id.nav_send) {
