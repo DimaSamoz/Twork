@@ -21,21 +21,24 @@ public class GrayscaleConvertCode implements ComputationCode {
             e.printStackTrace();
         }
 
-        int width = image.getWidth();
-        int height = image.getHeight();
+        // Get something mutable
+        Bitmap mimg = image.copy(Bitmap.Config.RGB_565, true);
+
+        int width = mimg.getWidth();
+        int height = mimg.getHeight();
 
         for (int i = 0; i<height; i++) {
             for (int j = 0; j < width; j++) {
-                int c = image.getPixel(j, i);
+                int c = mimg.getPixel(j, i);
                 int red = (int)(Color.red(c) * 0.299);
                 int green = (int)(Color.green(c) * 0.587);
                 int blue = (int)(Color.blue(c) * 0.114);
 
                 int gray = Color.rgb(red + green + blue, red + green + blue, red + green + blue);
-                image.setPixel(j, i, gray);
+                mimg.setPixel(j, i, gray);
             }
         }
 
-        image.compress(Bitmap.CompressFormat.PNG, 100, output);
+        mimg.compress(Bitmap.CompressFormat.PNG, 100, output);
     }
 }

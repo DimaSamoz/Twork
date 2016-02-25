@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -81,6 +82,7 @@ public class CompService extends Service {
                         JobFetchExample.doJob(CompService.this);
                     } catch (Throwable throwable) {
                         try {
+                            Log.e("CompService", "", throwable);
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -117,6 +119,10 @@ public class CompService extends Service {
     // TODO: use parts of Ben's JobFetchExample
     private void fetchJobs(String hostName) {
 
+    }
+
+    public boolean getShouldBeRunning() {
+        return shouldBeRunning;
     }
 
 }
