@@ -134,6 +134,9 @@ public class JobFetchExample {
                         case "GrayscaleConvertCode":
                             new GrayscaleConvertCode().run(jobInput, jobOutput);
                             break;
+                        case "SepiaConvertCode":
+                            new SepiaConvertCode().run(jobInput, jobOutput);
+                            break;
                         default:
                             Log.w(TAG, "Unknown computation type");
                             // TODO: maybe should send an explicit fail response
