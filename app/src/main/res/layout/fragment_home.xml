@@ -115,12 +115,11 @@
         android:layout_below="@+id/linearLayout2"
         android:layout_centerHorizontal="true">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Statistics"
-            android:id="@+id/textView3" />
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart_daily_statistics"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
 
     </LinearLayout>
 </RelativeLayout>
