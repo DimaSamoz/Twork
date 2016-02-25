@@ -21,6 +21,7 @@ import java.util.List;
 
 import uk.ac.cam.grp_proj.mike.twork_data.Computation;
 import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
+import uk.ac.cam.grp_proj.mike.twork_service.CompService;
 
 /**
  * Created by Dima on 04/02/16.
@@ -82,7 +83,6 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
             vh.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    comp.setSelected(isChecked);
                     int pos = (int) buttonView.getTag();
                     checkedState[pos] = isChecked;
 
@@ -125,7 +125,7 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
     }
 
     public void populateList(final Context context, View view) {
-        allComps = Computation.getComputations();
+        allComps = CompService.getComputations(TworkDBHelper.getHelper(getContext()));
         CompsArrayAdapter adapter = new CompsArrayAdapter(context, allComps);
 
         listView = (ListView) view.findViewById(R.id.comps_list_view);
@@ -161,9 +161,10 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
 
         for (Computation comp :
                 selected) {
-            db.addComputation(comp.getId(), comp.getName(), TworkDBHelper.COMP_STATUS_ACTIVE, System.currentTimeMillis(), 0);
+            db.addComputation(comp.getId(), comp.getName(), comp.getDescription(), comp.getTopics(), TworkDBHelper.COMP_STATUS_ACTIVE, System.currentTimeMillis(), 0);
             Log.i("SQLite", "added" + comp.getName());
         }
+        CompService.updateComps();
     }
 
 }

@@ -1,24 +1,73 @@
 package uk.ac.cam.grp_proj.mike.twork_data;
 
-import java.util.ArrayList;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
+
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Dima on 06/02/16.
  */
 public class Computation {
+    private static List<Computation> allComps;
     private int id;
     private String name;
     private String description;
-    private String areas;
-    private boolean selected = false;
-    private static List<Computation> allComps;
+    private String topics;
+    private String status;
+    private Integer startTime;
+    private Integer endTime;
 
-    public Computation(String name, String description, String area) {
+    public Computation(int id, String name, String description, String topics, String status, Integer startTime, Integer endTime) {
+        this.id = id;
         this.name = name;
         this.description = description;
-        this.areas = area;
+        this.topics = topics;
+        this.status = status;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    public static void removeComp(String name) {
+        for (Computation comp :
+                allComps) {
+            if (comp.getName().equals(name)) {
+                allComps.remove(comp);
+                break;
+            }
+        }
+    }
+
+    public static List<String> getCompNames(List<Computation> comps) {
+        List<String> compNames = new LinkedList<>();
+        for (Computation comp :
+                comps) {
+            compNames.add(comp.getName());
+        }
+        return compNames;
+    }
+
+    // Update database entry based on the fields in the computation
+    public void flushToDatabase(TworkDBHelper helper) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(TworkDBHelper.TABLE_COMPUTATION_ID, id);
+        values.put(TworkDBHelper.TABLE_COMPUTATION_NAME, name);
+        values.put(TworkDBHelper.TABLE_COMPUTATION_DESC, description);
+        values.put(TworkDBHelper.TABLE_COMPUTATION_TOPICS, topics);
+        values.put(TworkDBHelper.TABLE_COMPUTATION_STATUS, status);
+        values.put(TworkDBHelper.TABLE_COMPUTATION_START_TIME, startTime);
+        values.put(TworkDBHelper.TABLE_COMPUTATION_END_TIME, endTime);
+
+
+        db.update(
+                TworkDBHelper.TABLE_COMPUTATION_TABLE_NAME,
+                values,
+                TworkDBHelper.TABLE_COMPUTATION_ID + " = " + id,
+                null);
+
     }
 
     public String getDescription() {
@@ -29,58 +78,8 @@ public class Computation {
         return name;
     }
 
-    // TODO database integration
-    public static List<Computation> getComputations() {
-        if (allComps == null) {
-            allComps = new ArrayList<>();
-
-            String[] compNames = {"DreamLab", "SETI@home", "Galaxy Zoo", "RNA World", "Malaria Control", "Leiden Classical", "GIMPS", "Electric Sheep", "DistributedDataMining", "Compute For Humanity"};
-
-            String[] compDescs = {
-                    "Breast, ovarian, prostate and pancreatic cancer",
-                    "Search for extraterrestrial life by analyzing specific radio frequencies emanating from space",
-                    "Classifies galaxy types from the Sloan Digital Sky Survey",
-                    "Uses bioinformatics software to study RNA structure",
-                    "Simulate the transmission dynamics and health effects of malaria",
-                    "General classical mechanics for students or scientists",
-                    "Searches for Mersenne primes of world record size",
-                    "Fractal flame generation",
-                    "Research in the various fields of data analysis and machine learning, such as stock market prediction and analysis of medical data",
-                    "Generating cryptocurrencies to sell for money to be donated to charities"
-            };
-
-            String[] compAreas = {
-                    "Cancer research",
-                    "Astrobiology",
-                    "Astronomy, Cosmology",
-                    "Molecular biology",
-                    "Epidemiology",
-                    "Chemistry",
-                    "Mathematics",
-                    "Computational art",
-                    "Data analysis, Machine learning",
-                    "Criptocurrencies, Charitable organisations"
-
-            };
-            for (int i = 0; i < compNames.length; i++) {
-                allComps.add(new Computation(compNames[i], compDescs[i], compAreas[i]));
-            }
-        }
-
-        return allComps;
-    }
-
     public int getId() {
-        return new Random().nextInt();
-//        return id;
-    }
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
+        return id;
     }
 
     @Override
@@ -88,7 +87,23 @@ public class Computation {
         return name;
     }
 
-    public String getAreas() {
-        return areas;
+    public String getTopics() {
+        return topics;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Integer getStartTime() {
+        return startTime;
+    }
+
+    public Integer getEndTime() {
+        return endTime;
     }
 }

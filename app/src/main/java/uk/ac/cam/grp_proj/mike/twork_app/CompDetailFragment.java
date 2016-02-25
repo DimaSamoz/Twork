@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import uk.ac.cam.grp_proj.mike.twork_data.Computation;
+import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
+import uk.ac.cam.grp_proj.mike.twork_service.CompService;
 
 /**
  * Created by Dima on 12/02/16.
@@ -26,12 +28,7 @@ public class CompDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-            comp = Computation.getComputations().get(getArguments().getInt(ARG_ITEM_ID));
-
-
+            comp = CompService.getComputations(TworkDBHelper.getHelper(getContext())).get(getArguments().getInt(ARG_ITEM_ID));
         }
 
     }
@@ -44,7 +41,6 @@ public class CompDetailFragment extends Fragment {
         Activity activity = this.getActivity();
         CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
 
-        Log.i("comp1231", String.valueOf(appBarLayout));
         if (appBarLayout != null) {
             String name = comp.getName();
             Log.i("comp", name);
@@ -53,7 +49,7 @@ public class CompDetailFragment extends Fragment {
 
         if (comp != null) {
             ((TextView) view.findViewById(R.id.computation_detail)).setText(comp.getDescription());
-            ((TextView) view.findViewById(R.id.comp_areas)).setText(comp.getAreas());
+            ((TextView) view.findViewById(R.id.comp_areas)).setText(comp.getTopics());
 
         }
 

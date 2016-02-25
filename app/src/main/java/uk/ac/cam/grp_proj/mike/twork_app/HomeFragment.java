@@ -2,6 +2,7 @@ package uk.ac.cam.grp_proj.mike.twork_app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.ac.cam.grp_proj.mike.twork_data.Computation;
 import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 
 /**
@@ -38,25 +40,29 @@ public class HomeFragment extends Fragment {
         listView = (ListView) view.findViewById(R.id.comp_list);
 
 
-        sharedPref = getActivity().getSharedPreferences(String.valueOf(R.string.shared_preference), Context.MODE_PRIVATE);
+        sharedPref = getActivity().getSharedPreferences(getString(R.string.shared_preference), Context.MODE_PRIVATE);
         mobileDataSwitch = (Switch) view.findViewById(R.id.mobileDataSwitch);
         batterySwitch = (Switch) view.findViewById(R.id.batterySwitch);
         locationSwitch = (Switch) view.findViewById(R.id.locationSwitch);
         compToggle = (ToggleButton) view.findViewById(R.id.toggleButton);
 
-        Log.i("comp_34", String.valueOf(getDataFromSharedPref(String.valueOf(R.string.battery_def))));
+        Log.i("comp_34", String.valueOf(getDataFromSharedPref(getString(R.string.battery_def))));
 
-        mobileDataSwitch.setChecked(getDataFromSharedPref(String.valueOf(R.string.mobile_def)));
-        batterySwitch.setChecked(getDataFromSharedPref(String.valueOf(R.string.battery_def)));
-        locationSwitch.setChecked(getDataFromSharedPref(String.valueOf(R.string.loc_def)));
+        mobileDataSwitch.setChecked(getDataFromSharedPref(getString(R.string.mobile_def)));
+        batterySwitch.setChecked(getDataFromSharedPref(getString(R.string.battery_def)));
+        locationSwitch.setChecked(getDataFromSharedPref(getString(R.string.loc_def)));
 
 
         compToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    TransitionDrawable transition = (TransitionDrawable) compToggle.getBackground();
+                    transition.startTransition(200);
                     ((MainActivity) getActivity()).startComputation();
                 } else {
+                    TransitionDrawable transition = (TransitionDrawable) compToggle.getBackground();
+                    transition.reverseTransition(200);
                     ((MainActivity) getActivity()).stopComputation();
                 }
             }
@@ -84,7 +90,7 @@ public class HomeFragment extends Fragment {
 //        comps.add("Compute π");
 
         TworkDBHelper db = TworkDBHelper.getHelper(getContext());
-        List<String> comps = db.getActiveComps();
+        List<String> comps = Computation.getCompNames(db.getActiveComps());
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, comps);
         listView.setAdapter(adapter);

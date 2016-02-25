@@ -30,29 +30,26 @@ public class SetupDefaultsFragment extends Fragment implements View.OnClickListe
         batterySwitch= (CheckBox) view.findViewById(R.id.battery);
         locationSwitch = (CheckBox) view.findViewById(R.id.location);
 
-        sharedPrefs = getActivity().getSharedPreferences(String.valueOf(R.string.shared_preference), Context.MODE_PRIVATE);
+        sharedPrefs = getActivity().getSharedPreferences(getString(R.string.shared_preference), Context.MODE_PRIVATE);
 
         mobileDataSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                editSharedPreference(String.valueOf(R.string.mobile_def), isChecked);
-                Log.i("comp_save_m", String.valueOf(isChecked));
+                editSharedPreference(getString(R.string.mobile_def), isChecked);
             }
         });
 
         locationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                editSharedPreference(String.valueOf(R.string.loc_def), isChecked);
-                Log.i("comp_save_l", String.valueOf(isChecked));
+                editSharedPreference(getString(R.string.loc_def), isChecked);
             }
         });
 
         batterySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                editSharedPreference(String.valueOf(R.string.battery_def), isChecked);
-                Log.i("comp_save+b", String.valueOf(isChecked));
+                editSharedPreference(getString(R.string.battery_def), isChecked);
             }
         });
 

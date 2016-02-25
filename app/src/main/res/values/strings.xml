@@ -28,4 +28,6 @@
     <string name="mobile_def">mobileDataDefault</string>
     <string name="battery_def">batteryDefault</string>
     <string name="loc_def">locationDefault</string>
+    <string name="context_remove">Remove</string>
+    <string name="context_pause">Pause</string>
 </resources>

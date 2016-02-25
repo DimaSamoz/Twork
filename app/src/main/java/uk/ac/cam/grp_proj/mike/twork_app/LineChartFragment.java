@@ -79,10 +79,10 @@ public class LineChartFragment extends Fragment {
 //        db.addJob(765, 34, 1234l, 4234, 2345l, 345l);
         Cursor cursor = db.readDataFromJobTable();
         int indexTime = cursor.getColumnIndex(TworkDBHelper.TABLE_JOB_START_TIME);
-        db.addJob(123,354, 231,System.currentTimeMillis(),344343,4324334);
-        db.addJob(1423,3584, 231,System.currentTimeMillis(),344343,4324334);
-        db.addJob(1623,3574, 231,System.currentTimeMillis(),344343,4324334);
-        db.addJob(1923,3534, 231,System.currentTimeMillis(),344343,4324334);
+        db.addJob(354, 123, 231,System.currentTimeMillis(),344343,4324334);
+        db.addJob(3584, 1423, 231,System.currentTimeMillis(),344343,4324334);
+        db.addJob(3574, 1623, 231,System.currentTimeMillis(),344343,4324334);
+        db.addJob(3534, 1923, 231,System.currentTimeMillis(),344343,4324334);
         Log.v("index", "" + indexTime);
         int i = 0;
         int nr = 0;

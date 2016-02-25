@@ -33,7 +33,7 @@
         android:id="@+id/setup_name"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="30dp"
-        android:hint="Name (optional)" />
+        android:hint="Name" />
 
     <Button
         android:layout_width="wrap_content"
@@ -41,5 +41,6 @@
         android:text="Next"
         android:id="@+id/next_button1"
         android:layout_gravity="center_horizontal"
-        android:nestedScrollingEnabled="false" />
+        android:nestedScrollingEnabled="false"
+        android:enabled="false" />
 </LinearLayout>

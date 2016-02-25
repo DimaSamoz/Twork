@@ -57,6 +57,8 @@ public class SetupIntroFragment extends Fragment implements View.OnClickListener
                 if (!name.equals("")) {
                     // User has entered their name
 
+                    Log.i("comp", "agsdgsg");
+
                     SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.shared_preference), Context.MODE_PRIVATE);
 
                     SharedPreferences.Editor editor = sharedPref.edit();

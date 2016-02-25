@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -119,29 +120,29 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-
-//        noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.main, menu);
+//
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//
+////        noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     public void startComputation() {
         if (mBound) {
@@ -157,56 +158,78 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
-            setTitle("Home");
-            HomeFragment homeFragment = new HomeFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
-
-        } else if (id == R.id.nav_comps) {
-            setTitle("Computations");
-            ComputationsFragment compsFragment = new ComputationsFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, compsFragment).addToBackStack("Computations").commit();
-
-        } else if (id == R.id.nav_stats) {
-            setTitle("Statistics");
-            LineChartFragment lineChartFragment = new LineChartFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, lineChartFragment).commit();
-
-        } else if (id == R.id.nav_achievements) {
-            setTitle("Achievements");
-//            Cursor cursor = mDB.readDataFromJobTable();
-//            cursor.moveToFirst();
-//            int res = cursor.getColumnIndex(TworkDBHelper.TABLE_JOB_DURATION);
-//            Log.v("aaa",res+"");
-//            int res2 = cursor.getInt(res);
-//            Log.v("aaa2",res2+"");
-//            Toast toast = Toast.makeText(this, res2+"", Toast.LENGTH_SHORT);
-//            toast.show();
-            AchievementsFragment achievementsFragment = new AchievementsFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, achievementsFragment).commit();
-
-        } else if (id == R.id.nav_settings) {
-            setTitle("Settings");
-            SettingsFragment settingsFragment = new SettingsFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, settingsFragment).commit();
-
-        } else if (id == R.id.nav_share) {
-            setTitle("Share");
-            SocialFragment socialFragment = new SocialFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, socialFragment).commit();
-
-        } else if (id == R.id.nav_send) {
-
-        }
+    public boolean onNavigationItemSelected(final MenuItem item) {
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Handle navigation view item clicks here.
+                int id = item.getItemId();
+
+                if (id == R.id.nav_home) {
+                    setTitle("Home");
+                    HomeFragment homeFragment = new HomeFragment();
+                    getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
+                            .replace(R.id.fragment_container, homeFragment)
+                            .commit();
+
+                } else if (id == R.id.nav_comps) {
+                    setTitle("Computations");
+                    ComputationsFragment compsFragment = new ComputationsFragment();
+                    getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
+                            .replace(R.id.fragment_container, compsFragment)
+                            .addToBackStack("Computations")
+                            .commit();
+
+                } else if (id == R.id.nav_stats) {
+                    setTitle("Statistics");
+                    LineChartFragment lineChartFragment = new LineChartFragment();
+                    getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
+                            .replace(R.id.fragment_container, lineChartFragment)
+                            .commit();
+
+                } else if (id == R.id.nav_achievements) {
+                    setTitle("Achievements");
+                    AchievementsFragment achievementsFragment = new AchievementsFragment();
+                    getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
+                            .replace(R.id.fragment_container, achievementsFragment)
+                            .commit();
+
+                } else if (id == R.id.nav_settings) {
+                    setTitle("Settings");
+                    SettingsFragment settingsFragment = new SettingsFragment();
+                    getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
+                            .replace(R.id.fragment_container, settingsFragment)
+                            .commit();
+
+                } else if (id == R.id.nav_share) {
+                    setTitle("Share");
+                    SocialFragment socialFragment = new SocialFragment();
+                    getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
+                            .replace(R.id.fragment_container, socialFragment)
+                            .commit();
+
+                } else if (id == R.id.nav_send) {
+
+                }
+            }
+        }, 200);
+
+
+
         return true;
     }
+
+
 
     public void enteredMenu() { isInsideMenu = true; }
     public void exitedMenu() { isInsideMenu = false; }

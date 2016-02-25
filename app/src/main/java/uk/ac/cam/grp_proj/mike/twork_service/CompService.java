@@ -3,15 +3,20 @@ package uk.ac.cam.grp_proj.mike.twork_service;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import uk.ac.cam.grp_proj.mike.twork_app.MainActivity;
 import uk.ac.cam.grp_proj.mike.twork_app.R;
+import uk.ac.cam.grp_proj.mike.twork_data.Computation;
+import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 
 /**
  * Created by Dima on 02/02/16.
@@ -26,6 +31,9 @@ public class CompService extends Service {
     public static final int RUNNING_NOTIFICATION_ID = 51;
     private int iterLimit;
     private boolean shouldBeRunning;
+
+    // A temporary cache for the available computations from the server
+    private static List<Computation> cachedComps;
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -48,11 +56,10 @@ public class CompService extends Service {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        // TODO for some reason the notification is only visible when the app is open
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         return new Notification.Builder(this)
-                .setSmallIcon(R.drawable.ic_not_icon)
+                .setSmallIcon(R.drawable.ic_white_not)
                 .setContentTitle("Tworking")
                 .setContentText("Twork computation running...")
                 .setContentIntent(pendingIntent)
@@ -107,6 +114,60 @@ public class CompService extends Service {
 //        iterLimit = 0;
         shouldBeRunning = false;
         stopForeground(true);
+    }
+
+    /**
+     * Return the list of available computations from the server
+     * @param db The database (helper) containing the computations the user already selected
+     * @return A list of available computations
+     */
+    public static List<Computation> getComputations(TworkDBHelper db) {
+        if (cachedComps == null) {
+            cachedComps = new ArrayList<>();
+
+            // TEMPORARY VALUES
+            String[] compNames = {"DreamLab", "SETI@home", "Galaxy Zoo", "RNA World", "Malaria Control", "Leiden Classical", "GIMPS", "Electric Sheep", "DistributedDataMining", "Compute For Humanity"};
+
+            String[] compDescs = {
+                    "Breast, ovarian, prostate and pancreatic cancer",
+                    "Search for extraterrestrial life by analyzing specific radio frequencies emanating from space",
+                    "Classifies galaxy types from the Sloan Digital Sky Survey",
+                    "Uses bioinformatics software to study RNA structure",
+                    "Simulate the transmission dynamics and health effects of malaria",
+                    "General classical mechanics for students or scientists",
+                    "Searches for Mersenne primes of world record size",
+                    "Fractal flame generation",
+                    "Research in the various fields of data analysis and machine learning, such as stock market prediction and analysis of medical data",
+                    "Generating cryptocurrencies to sell for money to be donated to charities"
+            };
+
+            String[] compAreas = {
+                    "Cancer research",
+                    "Astrobiology",
+                    "Astronomy, Cosmology",
+                    "Molecular biology",
+                    "Epidemiology",
+                    "Chemistry",
+                    "Mathematics",
+                    "Computational art",
+                    "Data analysis, Machine learning",
+                    "Criptocurrencies, Charitable organisations"
+
+            };
+            for (int i = 0; i < compNames.length; i++) {
+                // Filter out already selected computations
+                List<String> activeComps = Computation.getCompNames(db.getUnfinishedComps());
+                if (!activeComps.contains(compNames[i])) {
+                    cachedComps.add(new Computation(i, compNames[i], compDescs[i], compAreas[i], null, null, null));
+                }
+            }
+        }
+
+        return cachedComps;
+    }
+
+    public static void updateComps() {
+        cachedComps = null;
     }
 
     // TODO temporary service bypass

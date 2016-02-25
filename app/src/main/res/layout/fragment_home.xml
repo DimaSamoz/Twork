@@ -59,18 +59,18 @@
                 <Switch
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:text="Battery"
                     android:textSize="15dp"
-                    android:text="Mobile Data"
-                    android:id="@+id/mobileDataSwitch"
+                    android:id="@+id/batterySwitch"
                     android:layout_marginBottom="12dp"
                     android:layout_weight="4.79"/>
 
                 <Switch
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Battery"
                     android:textSize="15dp"
-                    android:id="@+id/batterySwitch"
+                    android:text="Mobile Data"
+                    android:id="@+id/mobileDataSwitch"
                     android:layout_marginBottom="12dp"
                     android:layout_weight="4.79"/>
 
@@ -93,7 +93,7 @@
                 <ToggleButton
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:drawableTop="@drawable/ic_white_72"
+                    android:background="@drawable/toggle_transition"
                     android:text="New ToggleButton"
                     android:id="@+id/toggleButton"
                     android:layout_gravity="center"
@@ -101,7 +101,9 @@
                     android:textOn="Running"
                     android:singleLine="true"
                     android:minHeight="100dp"
-                    android:checked="false" />
+                    android:checked="false"
+                    android:textSize="10dp" />
+                <!--android:drawableTop="@drawable/ic_white_toggle"-->
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>
