@@ -25,14 +25,13 @@ import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 
 public class JobFetchExample {
     private static final String TAG = "JobFetchExample";
-    private static long timeout = 100;
+    private static long timeout = 1000;
     private static int retries = 256;
 
     public static void doJob(Context context) throws InterruptedException {
         String hostURL = "http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000/";
 
         //Send GET /available
-        //At some point this will contain JSON about the phone, but it can be empty for now.
         HttpURLConnection con = null;
         for (int i = 0; i < retries; i++) {
             try {
@@ -87,6 +86,7 @@ public class JobFetchExample {
                 switch (responseCode) {
                     case 200:
                         // Has job
+                        Log.i(TAG, "Have job");
                         break;
                     case 204:
                         // No jobs
@@ -127,7 +127,18 @@ public class JobFetchExample {
                     //HashSet<String> filePaths = new HashSet<>();
                     // TODO: give some scratch space
                     //System.setSecurityManager(new WorkSecurityManager(filePaths));
-                    new PrimeComputationCode().run(jobInput, jobOutput);
+                    switch (functionName) {
+                        case "PrimeComputationCode":
+                            new PrimeComputationCode().run(jobInput, jobOutput);
+                            break;
+                        case "GrayscaleConvertCode":
+                            new GrayscaleConvertCode().run(jobInput, jobOutput);
+                            break;
+                        default:
+                            Log.w(TAG, "Unknown computation type");
+                            // TODO: maybe should send an explicit fail response
+                            continue;
+                    }
                     //System.setSecurityManager(oldSM);
 
                     //Get the output from the job
