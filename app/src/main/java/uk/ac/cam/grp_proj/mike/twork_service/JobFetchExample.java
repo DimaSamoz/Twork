@@ -25,14 +25,13 @@ import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 
 public class JobFetchExample {
     private static final String TAG = "JobFetchExample";
-    private static long timeout = 100;
+    private static long timeout = 1000;
     private static int retries = 256;
 
-    public static void doJob(Context context) throws InterruptedException {
+    public static void doJob(CompService context) throws InterruptedException {
         String hostURL = "http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000/";
 
         //Send GET /available
-        //At some point this will contain JSON about the phone, but it can be empty for now.
         HttpURLConnection con = null;
         for (int i = 0; i < retries; i++) {
             try {
@@ -68,7 +67,7 @@ public class JobFetchExample {
         String cookie = con.getHeaderField("Set-Cookie");
 
 
-        for(int i = 0; i< 100; i++) {
+        while (context.getShouldBeRunning()) {
 
             /*
              * Complete fetch and execute to run on device.
@@ -87,6 +86,7 @@ public class JobFetchExample {
                 switch (responseCode) {
                     case 200:
                         // Has job
+                        Log.i(TAG, "Have job");
                         break;
                     case 204:
                         // No jobs
@@ -127,12 +127,25 @@ public class JobFetchExample {
                     //HashSet<String> filePaths = new HashSet<>();
                     // TODO: give some scratch space
                     //System.setSecurityManager(new WorkSecurityManager(filePaths));
-                    new PrimeComputationCode().run(jobInput, jobOutput);
+                    switch (functionName) {
+                        case "PrimeComputationCode":
+                            new PrimeComputationCode().run(jobInput, jobOutput);
+                            break;
+                        case "GrayscaleConvertCode":
+                            new GrayscaleConvertCode().run(jobInput, jobOutput);
+                            break;
+                        case "SepiaConvertCode":
+                            new SepiaConvertCode().run(jobInput, jobOutput);
+                            break;
+                        default:
+                            Log.w(TAG, "Unknown computation type");
+                            // TODO: maybe should send an explicit fail response
+                            continue;
+                    }
                     //System.setSecurityManager(oldSM);
 
                     //Get the output from the job
-                    String outStr = new String(jobOutput.toByteArray(), StandardCharsets.UTF_8);
-                    Log.i(TAG, "Output from job: " + outStr);
+                    Log.i(TAG, "Output from job ready");
 
 
                     //Send result back
@@ -140,10 +153,10 @@ public class JobFetchExample {
                     HttpURLConnection resultCon = (HttpURLConnection) resultURL.openConnection();
                     resultCon.setRequestProperty("Cookie", cookie);
                     resultCon.setRequestMethod("POST");
-                    resultCon.setRequestProperty("content-type", "text/plain");
+                    resultCon.setRequestProperty("content-type", "application/octet-stream");
                     resultCon.setDoOutput(true);
                     OutputStream osw = resultCon.getOutputStream();
-                    osw.write(outStr.getBytes(StandardCharsets.UTF_8));
+                    osw.write(jobOutput.toByteArray());
                     osw.close();
                     Log.i(TAG, "Result response: " + resultCon.getResponseCode());
                 } catch (JSONException e) {
@@ -151,7 +164,7 @@ public class JobFetchExample {
                 }
             }
             catch (IOException e) {
-                Log.e(TAG, "", e);
+                Log.e(TAG, "IOException", e);
             }
         }
     }
