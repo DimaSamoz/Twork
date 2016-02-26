@@ -11,6 +11,7 @@ dependencies {
     compile files('libs/json-20151123.jar')
 //    compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
     compile 'com.github.PhilJay:MPAndroidChart:v2.0.9'
+    compile 'com.android.support:preference-v7:23.1.0'
 
 }
 

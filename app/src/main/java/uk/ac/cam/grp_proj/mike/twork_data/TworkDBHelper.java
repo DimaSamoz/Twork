@@ -46,7 +46,7 @@ public class TworkDBHelper extends SQLiteOpenHelper {
     // Creating the db and tables
     private static final String SQL_CREATE_ENTRIES_COMPUTATION_TABLE =
             "CREATE TABLE " + TABLE_COMPUTATION_TABLE_NAME + " (" +
-                    TABLE_COMPUTATION_ID + " INTEGER PRIMARY KEY," +
+                    TABLE_COMPUTATION_ID + " TEXT PRIMARY KEY," +
                     TABLE_COMPUTATION_NAME + " TEXT," +
                     TABLE_COMPUTATION_DESC + " TEXT, " +
                     TABLE_COMPUTATION_TOPICS + " TEXT, " +
@@ -56,7 +56,7 @@ public class TworkDBHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_ENTRIES_JOB_TABLE =
             "CREATE TABLE " + TABLE_JOB_TABLE_NAME + " (" +
-                    TABLE_JOB_ID + " INTEGER PRIMARY KEY, " +
+                    TABLE_JOB_ID + " TEXT PRIMARY KEY, " +
                     TABLE_JOB_COMPUTATION_ID + " INTEGER, " +
                     TABLE_JOB_DURATION + " INTEGER, " +
                     TABLE_JOB_START_TIME + " DATETIME, " +
@@ -76,7 +76,6 @@ public class TworkDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // TODO Auto-generated method stub
         db.execSQL(SQL_CREATE_ENTRIES_COMPUTATION_TABLE);
         db.execSQL(SQL_CREATE_ENTRIES_JOB_TABLE);
 
@@ -84,7 +83,6 @@ public class TworkDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO Auto-generated method stub
         db.execSQL("DROP TABLE IF EXISTS " + SQL_CREATE_ENTRIES_COMPUTATION_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + SQL_CREATE_ENTRIES_JOB_TABLE);
         onCreate(db);
@@ -95,7 +93,7 @@ public class TworkDBHelper extends SQLiteOpenHelper {
     }
 
     // Add computation to computation table
-    public void addComputation(int id,String name, String desc, String topics, String status,
+    public void addComputation(String id,String name, String desc, String topics, String status,
                                long startTime, long endTime) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -118,7 +116,7 @@ public class TworkDBHelper extends SQLiteOpenHelper {
 
     public void removeComputation(Computation comp) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_COMPUTATION_TABLE_NAME, TABLE_COMPUTATION_ID + "=" + comp.getId(), null );
+        db.delete(TABLE_COMPUTATION_TABLE_NAME, TABLE_COMPUTATION_ID + "= '" + comp.getId() + "'", null );
     }
 
     // Add job to job table
@@ -140,7 +138,7 @@ public class TworkDBHelper extends SQLiteOpenHelper {
         return queryComputations(TABLE_COMPUTATION_STATUS + " = '" + COMP_STATUS_ACTIVE + "'");
     }
 
-    public List<Computation> getUnfinishedComps() {
+    public List<Computation> getSelectedComps() {
         return queryComputations(TABLE_COMPUTATION_STATUS + " <> '" + COMP_STATUS_COMPLETE + "'");
     }
 
@@ -158,10 +156,9 @@ public class TworkDBHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Log.i("comp_status", cursor.getString(4));
                 // Create new computation from the record
                 Computation comp = new Computation(
-                        cursor.getInt(0),
+                        cursor.getString(0),
                         cursor.getString(1),
                         cursor.getString(2),
                         cursor.getString(3),

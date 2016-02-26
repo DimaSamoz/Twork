@@ -1,5 +1,6 @@
 package uk.ac.cam.grp_proj.mike.twork_app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
@@ -28,7 +29,7 @@ import uk.ac.cam.grp_proj.mike.twork_service.CompService;
 public class ComputationsFragment extends ListFragment {
 
     ListView listView;
-    List<Computation> unfinishedComps;
+    List<Computation> selectedComps;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,13 +59,24 @@ public class ComputationsFragment extends ListFragment {
         });
 
         // TODO Temporary hardcoded values
-        unfinishedComps = TworkDBHelper.getHelper(getContext()).getUnfinishedComps();
-        List<String> unfinishedCompNames = Computation.getCompNames(unfinishedComps);
+        selectedComps = TworkDBHelper.getHelper(getContext()).getSelectedComps();
+        List<String> selectedCompNames = Computation.getCompNames(selectedComps);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, unfinishedCompNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, selectedCompNames);
         setListAdapter(adapter);
 
         registerForContextMenu(listView);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getContext(), CompDetailActivity.class);
+                intent.putExtra(CompDetailFragment.ARG_ITEM_ID, position);
+                intent.putExtra(CompDetailFragment.ARG_COMPS_LIST, CompDetailFragment.LIST_SELECTED_COMPS);
+
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -91,17 +103,17 @@ public class ComputationsFragment extends ListFragment {
         switch (item.getItemId()) {
             case R.id.pause_comp:
                 Log.i("comp", "pause");
-                Computation toPause = unfinishedComps.get(info.position);
+                Computation toPause = selectedComps.get(info.position);
                 toPause.setStatus(TworkDBHelper.COMP_STATUS_WAITING);
                 toPause.flushToDatabase(TworkDBHelper.getHelper(getContext()));
                 return true;
             case R.id.remove_comp:
                 Log.i("comp", "remove");
-                Computation toRemove = unfinishedComps.get(info.position);
+                Computation toRemove = selectedComps.get(info.position);
                 TworkDBHelper.getHelper(getContext()).removeComputation(toRemove);
                 CompService.updateComps();
-                unfinishedComps.remove(toRemove);
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, Computation.getCompNames(unfinishedComps));
+                selectedComps.remove(toRemove);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, Computation.getCompNames(selectedComps));
                 setListAdapter(adapter);
                 ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
                 return true;

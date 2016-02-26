@@ -21,12 +21,14 @@
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="100dp"
             android:id="@+id/comp_list"
             android:layout_gravity="center_horizontal"
             android:choiceMode="none"
             android:layout_marginBottom="12dp"
-            android:layout_weight="4.79" />
+            android:listSelector="@android:color/transparent"
+            android:cacheColorHint="@android:color/transparent"
+            android:clickable="false" />
     </LinearLayout>
 
     <LinearLayout
@@ -60,7 +62,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Battery"
-                    android:textSize="15dp"
+                    style="?android:attr/textAppearanceMedium"
                     android:id="@+id/batterySwitch"
                     android:layout_marginBottom="12dp"
                     android:layout_weight="4.79"/>
@@ -68,7 +70,7 @@
                 <Switch
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textSize="15dp"
+                    style="?android:attr/textAppearanceMedium"
                     android:text="Mobile Data"
                     android:id="@+id/mobileDataSwitch"
                     android:layout_marginBottom="12dp"
@@ -78,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Location"
-                    android:textSize="15dp"
+                    style="?android:attr/textAppearanceMedium"
                     android:id="@+id/locationSwitch"
                     android:layout_marginBottom="12dp"
                     android:layout_weight="4.79"/>
@@ -103,7 +105,6 @@
                     android:minHeight="100dp"
                     android:checked="false"
                     android:textSize="10dp" />
-                <!--android:drawableTop="@drawable/ic_white_toggle"-->
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>
@@ -114,6 +115,15 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/linearLayout2"
         android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Statistics"
+            android:id="@+id/textView3"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="3dp" />
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chart_daily_statistics"

@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -16,8 +17,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 import uk.ac.cam.grp_proj.mike.twork_service.CompService;
@@ -58,8 +60,11 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        //mDB.addComputation(213, "lala", "idle", 23232, 312323);
-        //mDB.addJob(213, 322, 21, 21);
+        View headerView = navigationView.getHeaderView(0);
+
+        TextView header_text = (TextView) headerView.findViewById(R.id.header_text);
+        Typeface font = Typeface.createFromAsset(getAssets(), "Museo 100.otf");
+        header_text.setTypeface(font);
 
         // Bind to CompService
         Intent intent = new Intent(this, CompService.class);
@@ -169,62 +174,43 @@ public class MainActivity extends AppCompatActivity
                 // Handle navigation view item clicks here.
                 int id = item.getItemId();
 
+                Fragment visible = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+                Fragment fragment = new Fragment();
+
                 if (id == R.id.nav_home) {
                     setTitle("Home");
-                    HomeFragment homeFragment = new HomeFragment();
-                    getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
-                            .replace(R.id.fragment_container, homeFragment)
-                            .addToBackStack("Home")
-                            .commit();
+                    fragment = new HomeFragment();
 
                 } else if (id == R.id.nav_comps) {
                     setTitle("Computations");
-                    ComputationsFragment compsFragment = new ComputationsFragment();
-                    getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
-                            .replace(R.id.fragment_container, compsFragment)
-                            .addToBackStack("Computations")
-                            .commit();
+                    fragment = new ComputationsFragment();
 
                 } else if (id == R.id.nav_stats) {
                     setTitle("Statistics");
-                    LineChartFragment lineChartFragment = new LineChartFragment();
-                    getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
-                            .replace(R.id.fragment_container, lineChartFragment)
-                            .addToBackStack("Statistics")
-                            .commit();
+                    fragment = new LineChartFragment();
 
                 } else if (id == R.id.nav_achievements) {
                     setTitle("Achievements");
-                    AchievementsFragment achievementsFragment = new AchievementsFragment();
-                    getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
-                            .replace(R.id.fragment_container, achievementsFragment)
-                            .addToBackStack("Achievements")
-                            .commit();
+                    fragment = new AchievementsFragment();
 
                 } else if (id == R.id.nav_settings) {
                     setTitle("Settings");
-                    SettingsFragment settingsFragment = new SettingsFragment();
-                    getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
-                            .replace(R.id.fragment_container, settingsFragment)
-                            .addToBackStack("Settings")
-                            .commit();
+                    fragment = new SettingsFragment();
 
                 } else if (id == R.id.nav_share) {
                     setTitle("Share");
-                    SocialFragment socialFragment = new SocialFragment();
-                    getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
-                            .replace(R.id.fragment_container, socialFragment)
-                            .addToBackStack("Share")
-                            .commit();
+                    fragment = new SocialFragment();
 
                 } else if (id == R.id.nav_send) {
 
+                }
+
+                if (!visible.getClass().equals(fragment.getClass())) {
+                    getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_right, R.anim.fade_out)
+                            .replace(R.id.fragment_container, fragment)
+                            .commit();
                 }
             }
         }, 200);

@@ -20,6 +20,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 
@@ -75,8 +76,8 @@ public class LineChartFragment extends Fragment {
         TworkDBHelper db = TworkDBHelper.getHelper(getContext());
         Cursor cursor = db.readDataFromJobTable();
         int indexTime = cursor.getColumnIndex(TworkDBHelper.TABLE_JOB_START_TIME);
-        db.addJob(354, 123, 231,System.currentTimeMillis(),344343,4324334);
-        db.addJob(3584, 1423, 231,System.currentTimeMillis(),344343,4324334);
+        db.addJob(new Random().nextInt(), 123, 231,System.currentTimeMillis(),344343,4324334);
+        db.addJob(new Random().nextInt(), 1423, 231,System.currentTimeMillis(),344343,4324334);
         Log.v("index", "" + indexTime);
         int i = 0;
         int nr = 0;

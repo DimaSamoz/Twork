@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="preferences">
+    <PreferenceCategory
+        android:title="Battery"
+        android:key="battery">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="use_battery"
+            android:summaryOn="Use battery for computation"
+            android:summaryOff="Do computations only while charging"
+            android:shouldDisableView="true"
+            android:title="Use battery"/>
+            <!--android:layout="@layout/pref_item"-->
+
+        <ListPreference
+            android:key="battery_limit"
+            android:title="Set minimum battery limit"
+            android:summary="%s"
+            android:entries="@array/battery_limits"
+            android:entryValues="@array/battery_limits_ids"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Internet"
+        android:icon="@drawable/ic_public_24dp"
+        android:key="internet">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="use_data"
+            android:summaryOn="Use mobile data if there's no WiFi"
+            android:summaryOff="Do computations only using WiFi"
+            android:shouldDisableView="true"
+            android:title="Use mobile data" />
+
+        <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+        <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+        <EditTextPreference
+            android:capitalize="words"
+            android:defaultValue="xddf"
+            android:inputType="textCapWords"
+            android:key="example_text"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="sbsfbsf" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Location"
+        android:icon="@drawable/ic_place_24dp"
+        android:key="location">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="use_battery"
+            android:summary="Do computation only while charging"
+            android:shouldDisableView="true"
+            android:title="Use battery" />
+
+        <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+        <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+        <EditTextPreference
+            android:capitalize="words"
+            android:defaultValue="xddf"
+            android:inputType="textCapWords"
+            android:key="example_text"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="sbsfbsf" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Scheduling"
+        android:icon="@drawable/ic_schedule_24dp"
+        android:key="scheduling">
+
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Computations"
+        android:icon="@drawable/ic_black_vec"
+        android:key="computations">
+
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Account"
+        android:icon="@drawable/ic_person_24dp"
+        android:key="account">
+
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="About"
+        android:icon="@drawable/ic_info_outline_24dp"
+        android:key="about">
+
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
