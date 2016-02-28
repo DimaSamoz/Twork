@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class Computation {
     private static List<Computation> allComps;
-    private int id;
+    private String id;
     private String name;
     private String description;
     private String topics;
@@ -19,7 +19,7 @@ public class Computation {
     private Integer startTime;
     private Integer endTime;
 
-    public Computation(int id, String name, String description, String topics, String status, Integer startTime, Integer endTime) {
+    public Computation(String id, String name, String description, String topics, String status, Integer startTime, Integer endTime) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -78,7 +78,7 @@ public class Computation {
         return name;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

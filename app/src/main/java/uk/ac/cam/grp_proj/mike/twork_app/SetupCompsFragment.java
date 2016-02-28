@@ -137,6 +137,7 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(context, CompDetailActivity.class);
                 intent.putExtra(CompDetailFragment.ARG_ITEM_ID, position);
+                intent.putExtra(CompDetailFragment.ARG_COMPS_LIST, CompDetailFragment.LIST_ALL_COMPS);
 
                 context.startActivity(intent);
             }

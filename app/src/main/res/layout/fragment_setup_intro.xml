@@ -28,7 +28,7 @@
     <EditText
         android:layout_width="304dp"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
+        android:inputType="textCapWords"
         android:ems="10"
         android:id="@+id/setup_name"
         android:layout_gravity="center_horizontal"

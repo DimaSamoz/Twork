@@ -137,6 +137,9 @@ public class JobFetchExample {
                         case "SepiaConvertCode":
                             new SepiaConvertCode().run(jobInput, jobOutput);
                             break;
+                        case "EdgeDetect":
+                            new EdgeDetect().run(jobInput, jobOutput);
+                            break;
                         default:
                             Log.w(TAG, "Unknown computation type");
                             // TODO: maybe should send an explicit fail response

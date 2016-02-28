@@ -5,14 +5,28 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ExecutionException;
 
 import uk.ac.cam.grp_proj.mike.twork_app.MainActivity;
 import uk.ac.cam.grp_proj.mike.twork_app.R;
@@ -35,6 +49,10 @@ public class CompService extends Service {
 
     // A temporary cache for the available computations from the server
     private static List<Computation> cachedComps;
+
+    private static final String TAG = "JobFetchExample";
+    public static final String HOST_URL = "http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000/";
+
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -61,8 +79,9 @@ public class CompService extends Service {
 
         return new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_white_not)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_color_512))
                 .setContentTitle("Tworking")
-                .setContentText("Twork computation running...")
+                .setContentText("Computation running...")
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
                 .build();
@@ -112,6 +131,31 @@ public class CompService extends Service {
         thread.start();
     }
 
+
+    private static class JSONRetriever extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String retString = "";
+
+            try {
+                URL jobURL = new URL(params[0] + "computations");
+                HttpURLConnection jobCon = (HttpURLConnection) jobURL.openConnection();
+                jobCon.connect();
+                //Parse the JSON describing the job
+                InputStream in = jobCon.getInputStream();
+                StringWriter writer = new StringWriter();
+                IOUtils.copy(in, writer, StandardCharsets.UTF_8);
+
+                retString =  writer.toString();
+            } catch (IOException e) {
+                Log.e(TAG, "", e);
+            }
+            return retString;
+        }
+    }
+
+
     public void stopComputation() {
 //        iterLimit = 0;
         shouldBeRunning = false;
@@ -124,44 +168,79 @@ public class CompService extends Service {
      * @return A list of available computations
      */
     public static List<Computation> getComputations(TworkDBHelper db) {
-        if (cachedComps == null) {
-            cachedComps = new ArrayList<>();
+        cachedComps = new ArrayList<>();
 
-            // TEMPORARY VALUES
-            String[] compNames = {"DreamLab", "SETI@home", "Galaxy Zoo", "RNA World", "Malaria Control", "Leiden Classical", "GIMPS", "Electric Sheep", "DistributedDataMining", "Compute For Humanity"};
+        try {
+            List<String> alreadySelectedComps = Computation.getCompNames(db.getSelectedComps());
 
-            String[] compDescs = {
-                    "Breast, ovarian, prostate and pancreatic cancer",
-                    "Search for extraterrestrial life by analyzing specific radio frequencies emanating from space",
-                    "Classifies galaxy types from the Sloan Digital Sky Survey",
-                    "Uses bioinformatics software to study RNA structure",
-                    "Simulate the transmission dynamics and health effects of malaria",
-                    "General classical mechanics for students or scientists",
-                    "Searches for Mersenne primes of world record size",
-                    "Fractal flame generation",
-                    "Research in the various fields of data analysis and machine learning, such as stock market prediction and analysis of medical data",
-                    "Generating cryptocurrencies to sell for money to be donated to charities"
-            };
+            String str = new JSONRetriever().execute(HOST_URL).get();
+            JSONObject j = new JSONObject(str);
+            JSONArray compArray = j.getJSONArray("computations");
 
-            String[] compAreas = {
-                    "Cancer research",
-                    "Astrobiology",
-                    "Astronomy, Cosmology",
-                    "Molecular biology",
-                    "Epidemiology",
-                    "Chemistry",
-                    "Mathematics",
-                    "Computational art",
-                    "Data analysis, Machine learning",
-                    "Criptocurrencies, Charitable organisations"
+            for (int i = 0; i < compArray.length(); i++) {
+                JSONObject comp = compArray.getJSONObject(i);
+                String compID = comp.getString("id");
+                String compName = comp.getString("name");
+                String compDesc = comp.getString("description");
+//                        String compTopics = comp.getString("topics");
+                String compTopics = "Lattice-theoretic astrogeography";
+                Computation newComp = new Computation(
+                        compID,
+                        compName,
+                        compDesc,
+                        compTopics,
+                        null,
+                        null,
+                        null
+                );
 
-            };
-            for (int i = 0; i < compNames.length; i++) {
-                // Filter out already selected computations
-                List<String> activeComps = Computation.getCompNames(db.getUnfinishedComps());
-                if (!activeComps.contains(compNames[i])) {
-                    cachedComps.add(new Computation(i, compNames[i], compDescs[i], compAreas[i], null, null, null));
+                if (!alreadySelectedComps.contains(newComp.getName())) {
+                    cachedComps.add(newComp);
                 }
+            }
+
+
+        } catch (JSONException e) {
+            Log.e(TAG, "bad response", e);
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, "connection interrupted", e);
+        }
+
+
+        // TEMPORARY VALUES
+        String[] compNames = {"DreamLab", "SETI@home", "Galaxy Zoo", "RNA World", "Malaria Control", "Leiden Classical", "GIMPS", "Electric Sheep", "DistributedDataMining", "Compute For Humanity"};
+
+        String[] compDescs = {
+                "Breast, ovarian, prostate and pancreatic cancer",
+                "Search for extraterrestrial life by analyzing specific radio frequencies emanating from space",
+                "Classifies galaxy types from the Sloan Digital Sky Survey",
+                "Uses bioinformatics software to study RNA structure",
+                "Simulate the transmission dynamics and health effects of malaria",
+                "General classical mechanics for students or scientists",
+                "Searches for Mersenne primes of world record size",
+                "Fractal flame generation",
+                "Research in the various fields of data analysis and machine learning, such as stock market prediction and analysis of medical data",
+                "Generating cryptocurrencies to sell for money to be donated to charities"
+        };
+
+        String[] compAreas = {
+                "Cancer research",
+                "Astrobiology",
+                "Astronomy, Cosmology",
+                "Molecular biology",
+                "Epidemiology",
+                "Chemistry",
+                "Mathematics",
+                "Computational art",
+                "Data analysis, Machine learning",
+                "Criptocurrencies, Charitable organisations"
+
+        };
+        for (int i = 0; i < compNames.length; i++) {
+            // Filter out already selected computations
+            List<String> activeComps = Computation.getCompNames(db.getSelectedComps());
+            if (!activeComps.contains(compNames[i])) {
+                cachedComps.add(new Computation(""+i, compNames[i], compDescs[i], compAreas[i], null, null, null));
             }
         }
 

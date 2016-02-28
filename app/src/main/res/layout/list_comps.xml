@@ -17,7 +17,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18dp"
-            android:text="SETI@home"
             android:focusable="false"
             android:focusableInTouchMode="false">
         </TextView>
@@ -29,7 +28,6 @@
             android:textSize="14dp"
             android:paddingLeft="8dp"
             android:textColor="#bdbdbd"
-            android:text="Search for extraterrestrial life by analyzing specific radio "
             android:focusable="false"
             android:focusableInTouchMode="false">
         </TextView>

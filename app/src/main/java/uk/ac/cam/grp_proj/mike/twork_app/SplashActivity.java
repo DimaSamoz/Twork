@@ -15,6 +15,8 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.appevents.AppEventsLogger;
+
 public class SplashActivity extends AppCompatActivity {
 
     private ImageView logo;
@@ -80,5 +82,21 @@ public class SplashActivity extends AppCompatActivity {
             welcome.setText(text);
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Logs 'install' and 'app activate' App Events.
+        AppEventsLogger.activateApp(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Logs 'app deactivate' App Event.
+        AppEventsLogger.deactivateApp(this);
     }
 }

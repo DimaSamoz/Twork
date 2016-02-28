@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import java.util.Random;
 
 import uk.ac.cam.grp_proj.mike.twork_data.Computation;
 import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
@@ -149,8 +150,8 @@ public class HomeFragment extends Fragment {
         TworkDBHelper db = TworkDBHelper.getHelper(getContext());
         Cursor cursor = db.readDataFromJobTable();
         int indexTime = cursor.getColumnIndex(TworkDBHelper.TABLE_JOB_START_TIME);
-        db.addJob(1923,44, 2313,System.currentTimeMillis(),344343,4324334);
-        db.addJob(1923,43, 2313,System.currentTimeMillis(),344343,4324334);
+        db.addJob(new Random().nextInt(),44, 2313,System.currentTimeMillis(),344343,4324334);
+        db.addJob(new Random().nextInt(),43, 2313,System.currentTimeMillis(),344343,4324334);
         Log.v("index", "" + indexTime);
         int i = 0;
         int nr = 0;
