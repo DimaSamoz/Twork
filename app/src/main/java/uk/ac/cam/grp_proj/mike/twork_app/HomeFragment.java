@@ -1,19 +1,20 @@
 package uk.ac.cam.grp_proj.mike.twork_app;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ListView;
@@ -29,19 +30,18 @@ import com.github.mikephil.charting.data.LineDataSet;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Date;
-import java.util.Random;
+import java.util.List;
 
 import uk.ac.cam.grp_proj.mike.twork_data.Computation;
 import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
+import uk.ac.cam.grp_proj.mike.twork_service.CompService;
 
-import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 
 /**
  * Created by Dima on 28/01/16.
  */
-public class HomeFragment extends Fragment implements CompoundButton.OnCheckedChangeListener{
+public class HomeFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
 
     private Switch mobileDataSwitch;
     private Switch batterySwitch;
@@ -53,6 +53,18 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
     private ArrayList<Entry> entries;
     private ArrayList<String> labels;
 
+    private BroadcastReceiver compStatusReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(CompService.COMP_PAUSED)) {
+                // Computation paused
+                compToggle.setText("Paused");
+            } else if (intent.getAction().equals(CompService.COMP_RESUMED)) {
+                // Computation resumed
+                compToggle.setText("Running");
+            }
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -100,8 +112,20 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
     @Override
     public void onResume() {
         super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(CompService.COMP_PAUSED);
+        intentFilter.addAction(CompService.COMP_RESUMED);
+
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(compStatusReceiver, intentFilter);
+
         addDataEntries();
         setUpChart();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(compStatusReceiver);
     }
 
     private boolean getDataFromSharedPref(String name) {
@@ -116,7 +140,6 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
         List<String> comps = Computation.getCompNames(db.getActiveComps());
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, comps);
-        ListView listView = (ListView) getView().findViewById(R.id.comp_list);
         listView.setAdapter(adapter);
 
         compToggle.setChecked(((MainActivity) getActivity()).isRunning());

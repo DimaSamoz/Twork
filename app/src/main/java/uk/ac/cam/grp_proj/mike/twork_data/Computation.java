@@ -57,7 +57,7 @@ public class Computation {
         db.update(
                 TworkDBHelper.TABLE_COMPUTATION_TABLE_NAME,
                 values,
-                TworkDBHelper.TABLE_COMPUTATION_ID + " = " + id,
+                TworkDBHelper.TABLE_COMPUTATION_ID + " = '" + id + "'",
                 null);
 
     }

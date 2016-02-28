@@ -1,7 +1,6 @@
 package uk.ac.cam.grp_proj.mike.twork_service;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -11,10 +10,9 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.*;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -29,7 +27,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 import uk.ac.cam.grp_proj.mike.twork_app.MainActivity;
@@ -55,13 +52,16 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
     private float batteryLimit;
 
     private static final String TAG = "JobFetcher";
-    public static final String HOST_URL = "http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000/";
+    public static final String HOST_URL =
+            "http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000/";
+    public static final String COMP_PAUSED = "computation_pausd";
+    public static final String COMP_RESUMED = "computation resumed";
     private ConnectivityManager cm;
 
     public CompService() {
     }
 
-    private final BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver constraintsReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context arg0, Intent batteryStatus) {
             if (shouldBeRunning) {
@@ -85,6 +85,10 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
                     } else if (!onlyWhileCharging && !enoughCharge) {
                         pauseComputation("Charge is below battery limit");
                     }
+                    if (paused) {
+                        Intent pausedIntent = new Intent(COMP_PAUSED);
+                        LocalBroadcastManager.getInstance(CompService.this).sendBroadcast(pausedIntent);
+                    }
                 } else {
                     boolean connectionCorrect = (onlyViaWiFi && isWifi())
                                             || (!onlyViaWiFi && isOnline());
@@ -95,6 +99,8 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
                             (onlyViaWiFi && isWifi() && chargeCorrect) ||
                             (!onlyViaWiFi && connectionCorrect && chargeCorrect)) {
                         resumeComputation();
+                        Intent resumedIntent = new Intent(COMP_RESUMED);
+                        LocalBroadcastManager.getInstance(CompService.this).sendBroadcast(resumedIntent);
                     }
                 }
             }
@@ -103,7 +109,7 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
 
     @Override
     public void onCreate() {
-        registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        registerReceiver(this.constraintsReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
         SharedPreferences sharedPrefs = getSharedPreferences(getString(R.string.shared_preference), MODE_PRIVATE);
 
@@ -121,7 +127,7 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
 
     @Override
     public void onDestroy() {
-        unregisterReceiver(this.mBatInfoReceiver);
+        unregisterReceiver(this.constraintsReceiver);
     }
 
     @Override
