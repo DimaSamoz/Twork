@@ -128,7 +128,7 @@ public class TworkDBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         String jobQuery =
-                "SELECT "+ TABLE_COMPUTATION_NAME +", COUNT("+ TABLE_JOB_ID +") FROM " + TABLE_COMPUTATION_TABLE_NAME + ", " + TABLE_JOB_TABLE_NAME + " WHERE " + TABLE_COMPUTATION_ID + " = " + TABLE_JOB_COMPUTATION_ID + ";";
+                "SELECT "+ TABLE_COMPUTATION_NAME +", COUNT("+ TABLE_JOB_ID + ") FROM " + TABLE_COMPUTATION_TABLE_NAME + ", " + TABLE_JOB_TABLE_NAME + " WHERE " + TABLE_COMPUTATION_TABLE_NAME + "." + TABLE_COMPUTATION_ID + " = " + TABLE_JOB_COMPUTATION_ID + " GROUP BY " + TABLE_COMPUTATION_NAME + ";";
 
         Cursor cursor = db.rawQuery(jobQuery, null);
 

@@ -96,7 +96,7 @@
                 <ToggleButton
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:background="@drawable/toggle_transition"
+                    android:background="@drawable/stop_run_transition"
                     android:text="New ToggleButton"
                     android:id="@+id/toggleButton"
                     android:layout_gravity="center"
