@@ -40,7 +40,7 @@ public class SepiaConvertCode implements ComputationCode {
 
                 red = coerceByte(gray + sepiaDepth * 2);
                 green = coerceByte(gray + sepiaDepth);
-                blue = coerceByte(gray + sepiaIntensity);
+                blue = coerceByte(gray - sepiaIntensity);
 
                 mimg.setPixel(j, i, Color.rgb(red, green, blue));
             }
