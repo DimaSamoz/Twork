@@ -209,7 +209,7 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
                         Log.e("CompService", "", throwable);
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Log.e(TAG, "", e);
                     }
                 }
 
