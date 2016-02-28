@@ -21,6 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.facebook.FacebookSdk;
+
 import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 import uk.ac.cam.grp_proj.mike.twork_service.CompService;
 
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -199,17 +202,17 @@ public class MainActivity extends AppCompatActivity
                     setTitle("Achievements");
                     fragment = new AchievementsFragment();
 
-                } else if (id == R.id.nav_settings) {
-                    setTitle("Settings");
+                } else if (id == R.id.nav_about) {
+                    setTitle("About");
                     fragment = new SettingsFragment();
 
-                } else if (id == R.id.nav_share) {
+                } /*else if (id == R.id.nav_share) {
                     setTitle("Share");
                     fragment = new SocialFragment();
 
                 } else if (id == R.id.nav_send) {
 
-                }
+                }*/
 
                 if (!visible.getClass().equals(fragment.getClass())) {
                     getSupportFragmentManager().beginTransaction()

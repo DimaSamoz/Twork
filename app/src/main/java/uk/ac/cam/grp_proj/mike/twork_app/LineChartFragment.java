@@ -53,6 +53,8 @@ public class LineChartFragment extends Fragment {
         LineDataSet dataset = new LineDataSet(entries, "Number of Jobs solved");
         dataset.setValueTextColor(Color.WHITE);
         dataset.setColor(Color.WHITE);
+        dataset.setValueFormatter(new YAxisValueFormatterToInt());
+        dataset.setValueTextSize(10);
         LineData data = new LineData(labels, dataset);
         chart.setData(data);
         XAxis xAxis = chart.getXAxis();
@@ -62,6 +64,7 @@ public class LineChartFragment extends Fragment {
         xAxis.setTextColor(Color.WHITE);
         chart.setVisibleXRange(10);
         chart.setClickable(false);
+
         chart.setDrawGridBackground(false);
         chart.setScaleYEnabled(false);
         chart.getLegend().setTextColor(Color.WHITE);
@@ -69,6 +72,9 @@ public class LineChartFragment extends Fragment {
         chart.getAxisRight().setDrawGridLines(false);
         chart.getXAxis().setDrawGridLines(false);
         chart.setDescription("");
+        chart.getAxisLeft().setValueFormatter(new YAxisValueFormatterToInt());
+        chart.getAxisRight().setEnabled(false);
+        //chart.getAxisLeft().setTextColor((Color.parseColor("#313131")));
         chart.setBackgroundColor(Color.TRANSPARENT);
     }
 
