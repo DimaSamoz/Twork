@@ -148,9 +148,11 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
     }
 
     private void setUpChart() {
-        LineDataSet dataset = new LineDataSet(entries, "# of Jobs solved");
+        LineDataSet dataset = new LineDataSet(entries, "Number of Jobs Solved/Hour");
         dataset.setValueTextColor(Color.WHITE);
         dataset.setDrawCubic(false);
+        dataset.setValueFormatter(new YAxisValueFormatterToInt());
+        dataset.setValueTextSize(10);
         dataset.setColor(Color.WHITE);
         LineData data = new LineData(labels, dataset);
         chart.setData(data);
@@ -167,6 +169,7 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
         chart.getAxisLeft().setDrawGridLines(false);
         chart.getAxisRight().setDrawGridLines(false);
         chart.getXAxis().setDrawGridLines(false);
+        chart.getAxisLeft().setValueFormatter(new YAxisValueFormatterToInt());
         chart.setDescription("");
         chart.setClickable(false);
         chart.setBackgroundColor(Color.TRANSPARENT);
@@ -181,9 +184,10 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
         Log.v("index", "" + indexTime);
         int i = 0;
         int nr = 0;
+        String currentLocalTime = "00:00:00";
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss");
-        String currentLocalTime = formatter2.format(new Date());
+       // String currentLocalTime = formatter2.format(new Date());
         String todayDay = formatter.format(new Date(System.currentTimeMillis()));
         cursor.moveToFirst();
         Log.v("Today", "" + todayDay);
@@ -200,7 +204,7 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
                         nr++;
                     } else {
                         entries.add(new Entry(nr, i));
-                        labels.add(currentLocalTime);
+                        labels.add(currentLocalTime.substring(0, 2));
                         i++;
                         Log.v("Numbers", "" + nr);
                         nr = 1;
@@ -212,7 +216,7 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
         }
         Log.v("cursor", "entry" + nr);
         entries.add(new Entry(nr, i));
-        labels.add(currentLocalTime);
+        labels.add(currentLocalTime.substring(0,2));
     }
 
     @Override
