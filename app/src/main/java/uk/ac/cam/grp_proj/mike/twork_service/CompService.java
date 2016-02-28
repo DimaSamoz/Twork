@@ -1,15 +1,20 @@
 package uk.ac.cam.grp_proj.mike.twork_service;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.os.Binder;
-import android.os.IBinder;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.*;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -23,9 +28,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 import uk.ac.cam.grp_proj.mike.twork_app.MainActivity;
@@ -36,22 +40,107 @@ import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 /**
  * Created by Dima on 02/02/16.
  */
-public class CompService extends Service {
-    private Queue<Job> pendingJobs = new LinkedList<>();
-
+public class CompService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener{
     // Binder given to clients
     private final IBinder mBinder = new CompBinder();
     private Thread thread;
 
-    public static final int RUNNING_NOTIFICATION_ID = 51;
-    private int iterLimit;
+    public static final int RUNNING_NOTIFICATION_ID = 1;
+    public static final int PAUSED_NOTIFICATION_ID = 2;
     private boolean shouldBeRunning;
+    private boolean paused;
+    private boolean onlyWhileCharging;
+    private boolean onlyViaWiFi;
 
-    // A temporary cache for the available computations from the server
-    private static List<Computation> cachedComps;
+    private float batteryLimit;
 
-    private static final String TAG = "JobFetchExample";
+    private static final String TAG = "JobFetcher";
     public static final String HOST_URL = "http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000/";
+    private ConnectivityManager cm;
+
+    public CompService() {
+    }
+
+    private final BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context arg0, Intent batteryStatus) {
+            if (shouldBeRunning) {
+                // Only consider changes when computation is supposed to run
+                int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+                boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING;
+
+                int rawLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+                int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+                float percentage = rawLevel/(float) scale;
+                boolean enoughCharge = batteryLimit < percentage;
+
+
+                if (!paused) {
+                    if (onlyViaWiFi && !isWifi()) {
+                        pauseComputation("No WiFi connection available");
+                    } else if (!onlyViaWiFi && !isOnline()) {
+                        pauseComputation("No internet connection");
+                    } else if (onlyWhileCharging && !isCharging) {
+                        pauseComputation("Phone is not charging");
+                    } else if (!onlyWhileCharging && !enoughCharge) {
+                        pauseComputation("Charge is below battery limit");
+                    }
+                } else {
+                    boolean connectionCorrect = (onlyViaWiFi && isWifi())
+                                            || (!onlyViaWiFi && isOnline());
+                    boolean chargeCorrect = (onlyWhileCharging && isCharging)
+                                         || (!onlyWhileCharging && enoughCharge);
+                    if (    (onlyWhileCharging && isCharging && connectionCorrect) ||
+                            (!onlyWhileCharging && chargeCorrect && connectionCorrect) ||
+                            (onlyViaWiFi && isWifi() && chargeCorrect) ||
+                            (!onlyViaWiFi && connectionCorrect && chargeCorrect)) {
+                        resumeComputation();
+                    }
+                }
+            }
+        }
+    };
+
+    @Override
+    public void onCreate() {
+        registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+
+        SharedPreferences sharedPrefs = getSharedPreferences(getString(R.string.shared_preference), MODE_PRIVATE);
+
+        cm = (ConnectivityManager)getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+
+        sharedPrefs.registerOnSharedPreferenceChangeListener(this);
+        onlyWhileCharging = !sharedPrefs.getBoolean(getString(R.string.battery_def), true);
+
+        batteryLimit = sharedPrefs.getInt(getString(R.string.batt_lim), 60) / (float) 100;
+
+        onlyViaWiFi = !sharedPrefs.getBoolean(getString(R.string.mobile_def), true);
+
+    }
+
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(this.mBatInfoReceiver);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.battery_def))) {
+            onlyWhileCharging = !sharedPreferences.getBoolean(getString(R.string.battery_def), true);
+        } else if (key.equals(getString(R.string.mobile_def))) {
+            onlyViaWiFi = !sharedPreferences.getBoolean(getString(R.string.mobile_def), true);
+        }
+    }
+
+    public boolean isOnline() {
+        return cm.getActiveNetworkInfo() != null &&
+                cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+
+    public boolean isWifi() {
+        return isOnline() && cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI;
+    }
 
 
     /**
@@ -71,7 +160,7 @@ public class CompService extends Service {
         return mBinder;
     }
 
-    private Notification createNotification() {
+    private Notification createNotification(String title, String text) {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
@@ -80,8 +169,8 @@ public class CompService extends Service {
         return new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_white_not)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_color_512))
-                .setContentTitle("Tworking")
-                .setContentText("Computation running...")
+                .setContentTitle(title)
+                .setContentText(text)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
                 .build();
@@ -91,49 +180,58 @@ public class CompService extends Service {
     public void startComputation() {
 
         // Notification
-        startForeground(RUNNING_NOTIFICATION_ID, createNotification());
+        startForeground(
+                RUNNING_NOTIFICATION_ID,
+                createNotification("Tworking...", "Computation running")
+        );
 
         shouldBeRunning = true;
+        final TworkDBHelper db = TworkDBHelper.getHelper(this);
 
-        iterLimit = 500;
 
-        // TODO replace with proper code
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+                android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_MORE_FAVORABLE);
 
-                while (shouldBeRunning) {
+                try {
+
+                    JobFetcher.doJob(CompService.this);
+
+                } catch (Throwable throwable) {
                     try {
-                        JobFetchExample.doJob(CompService.this);
-                    } catch (Throwable throwable) {
-                        try {
-                            Log.e("CompService", "", throwable);
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        Log.e("CompService", "", throwable);
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
 
-//                for (int i = 0; i < iterLimit; i++) {
-//                    Log.i("Service", Integer.toString(i));
-//
-//                    try {
-//                        Thread.sleep(500);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
             }
         });
 
         thread.start();
     }
 
+    public void pauseComputation(String text) {
+        paused = true;
+        stopForeground(true);
+        Notification pausedNotification = createNotification("Paused", text);
+        startForeground(PAUSED_NOTIFICATION_ID, pausedNotification);
+    }
+
+    public void resumeComputation() {
+        paused = false;
+        stopForeground(true);
+        startComputation();
+    }
+
+    public void stopComputation() {
+        shouldBeRunning = false;
+        stopForeground(true);
+    }
 
     private static class JSONRetriever extends AsyncTask<String, Void, String> {
-
         @Override
         protected String doInBackground(String... params) {
             String retString = "";
@@ -149,17 +247,10 @@ public class CompService extends Service {
 
                 retString =  writer.toString();
             } catch (IOException e) {
-                Log.e(TAG, "", e);
+//                Log.e(TAG, "", e);
             }
             return retString;
         }
-    }
-
-
-    public void stopComputation() {
-//        iterLimit = 0;
-        shouldBeRunning = false;
-        stopForeground(true);
     }
 
     /**
@@ -168,7 +259,7 @@ public class CompService extends Service {
      * @return A list of available computations
      */
     public static List<Computation> getComputations(TworkDBHelper db) {
-        cachedComps = new ArrayList<>();
+        List<Computation> serverComps = new ArrayList<>();
 
         try {
             List<String> alreadySelectedComps = Computation.getCompNames(db.getSelectedComps());
@@ -182,20 +273,18 @@ public class CompService extends Service {
                 String compID = comp.getString("id");
                 String compName = comp.getString("name");
                 String compDesc = comp.getString("description");
-//                        String compTopics = comp.getString("topics");
-                String compTopics = "Lattice-theoretic astrogeography";
+                String compTopics = comp.getString("topics");
+//                String compTopics = "Lattice-theoretic astrogeography";
                 Computation newComp = new Computation(
                         compID,
                         compName,
                         compDesc,
                         compTopics,
-                        null,
-                        null,
                         null
                 );
 
                 if (!alreadySelectedComps.contains(newComp.getName())) {
-                    cachedComps.add(newComp);
+                    serverComps.add(newComp);
                 }
             }
 
@@ -207,7 +296,7 @@ public class CompService extends Service {
         }
 
 
-        // TEMPORARY VALUES
+        // MOCK VALUES
         String[] compNames = {"DreamLab", "SETI@home", "Galaxy Zoo", "RNA World", "Malaria Control", "Leiden Classical", "GIMPS", "Electric Sheep", "DistributedDataMining", "Compute For Humanity"};
 
         String[] compDescs = {
@@ -240,29 +329,20 @@ public class CompService extends Service {
             // Filter out already selected computations
             List<String> activeComps = Computation.getCompNames(db.getSelectedComps());
             if (!activeComps.contains(compNames[i])) {
-                cachedComps.add(new Computation(""+i, compNames[i], compDescs[i], compAreas[i], null, null, null));
+                serverComps.add(new Computation("" + i, compNames[i], compDescs[i], compAreas[i], null));
             }
         }
 
-        return cachedComps;
+        return serverComps;
     }
 
-    public static void updateComps() {
-        cachedComps = null;
-    }
-
-    // TODO temporary service bypass
-    public void submitMacAddress(long number) {
-
-    }
-
-    // TODO: use parts of Ben's JobFetchExample
-    private void fetchJobs(String hostName) {
-
-    }
-
-    public boolean getShouldBeRunning() {
+    public boolean shouldBeRunning() {
         return shouldBeRunning;
     }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
 
 }

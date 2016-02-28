@@ -11,6 +11,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ListView;
@@ -38,7 +41,7 @@ import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 /**
  * Created by Dima on 28/01/16.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements CompoundButton.OnCheckedChangeListener{
 
     private Switch mobileDataSwitch;
     private Switch batterySwitch;
@@ -49,6 +52,7 @@ public class HomeFragment extends Fragment {
     private LineChart chart;
     private ArrayList<Entry> entries;
     private ArrayList<String> labels;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,12 +67,12 @@ public class HomeFragment extends Fragment {
         locationSwitch = (Switch) view.findViewById(R.id.locationSwitch);
         compToggle = (ToggleButton) view.findViewById(R.id.toggleButton);
 
-        Log.i("comp_34", String.valueOf(getDataFromSharedPref(getString(R.string.battery_def))));
-
         mobileDataSwitch.setChecked(getDataFromSharedPref(getString(R.string.mobile_def)));
         batterySwitch.setChecked(getDataFromSharedPref(getString(R.string.battery_def)));
         locationSwitch.setChecked(getDataFromSharedPref(getString(R.string.loc_def)));
 
+        mobileDataSwitch.setOnCheckedChangeListener(this);
+        batterySwitch.setOnCheckedChangeListener(this);
 
         compToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -86,12 +90,18 @@ public class HomeFragment extends Fragment {
         });
 
         chart = (LineChart) view.findViewById(R.id.chart_daily_statistics);
-        entries = new ArrayList<Entry>();
-        labels = new ArrayList<String>();
-        addDataEntries();
-        setUpChart();
+        entries = new ArrayList<>();
+        labels = new ArrayList<>();
+
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        addDataEntries();
+        setUpChart();
     }
 
     private boolean getDataFromSharedPref(String name) {
@@ -102,22 +112,15 @@ public class HomeFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // TODO Temporary hardcoded values
-
-
-
-//        ArrayList<String> comps = new ArrayList<>();
-//        comps.add("SETI@home");
-//        comps.add("Prime Search");
-//        comps.add("Ray Tracing");
-//        comps.add("Compute π");
-
         TworkDBHelper db = TworkDBHelper.getHelper(getContext());
         List<String> comps = Computation.getCompNames(db.getActiveComps());
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, comps);
         ListView listView = (ListView) getView().findViewById(R.id.comp_list);
         listView.setAdapter(adapter);
+
+        compToggle.setChecked(((MainActivity) getActivity()).isRunning());
+
 
     }
 
@@ -150,40 +153,59 @@ public class HomeFragment extends Fragment {
         TworkDBHelper db = TworkDBHelper.getHelper(getContext());
         Cursor cursor = db.readDataFromJobTable();
         int indexTime = cursor.getColumnIndex(TworkDBHelper.TABLE_JOB_START_TIME);
-        db.addJob(new Random().nextInt(),44, 2313,System.currentTimeMillis(),344343,4324334);
-        db.addJob(new Random().nextInt(),43, 2313,System.currentTimeMillis(),344343,4324334);
+//        db.addJob(new Random().nextInt(),44, 2313,System.currentTimeMillis(),344343,4324334);
+//        db.addJob(new Random().nextInt(),43, 2313,System.currentTimeMillis(),344343,4324334);
         Log.v("index", "" + indexTime);
         int i = 0;
         int nr = 0;
-        String currentLocalTime = "00:00:00";
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss");
+        String currentLocalTime = formatter2.format(new Date());
         String todayDay = formatter.format(new Date(System.currentTimeMillis()));
         cursor.moveToFirst();
         Log.v("Today", "" + todayDay);
-        do {
-            long value = Long.parseLong(cursor.getString(indexTime));
-            String localTime = formatter.format(new Date(value));
-            Log.v("localTime", "" + localTime);
-            if (localTime.equals(todayDay)) {
-                String localHour = formatter2.format(new Date(value));
-                Log.v("localTime", "" + localHour);
-                if ((localHour.substring(0, 2)).equals((currentLocalTime.substring(0,2)))) {
-                    nr++;
-                } else {
-                    entries.add(new Entry(nr, i));
-                    labels.add(currentLocalTime);
-                    i++;
-                    Log.v("Numbers", "" + nr);
-                    nr = 1;
-                    currentLocalTime = localHour;
-                    Log.v("currentLocalTime", "" + currentLocalTime);
+
+        if (cursor.moveToFirst()) {
+            do {
+                long value = Long.parseLong(cursor.getString(indexTime));
+                String localTime = formatter.format(new Date(value));
+                Log.v("localTime", "" + localTime);
+                if (localTime.equals(todayDay)) {
+                    String localHour = formatter2.format(new Date(value));
+                    Log.v("localTime", "" + localHour);
+                    if ((localHour.substring(0, 2)).equals((currentLocalTime.substring(0, 2)))) {
+                        nr++;
+                    } else {
+                        entries.add(new Entry(nr, i));
+                        labels.add(currentLocalTime);
+                        i++;
+                        Log.v("Numbers", "" + nr);
+                        nr = 1;
+                        currentLocalTime = localHour;
+                        Log.v("currentLocalTime", "" + currentLocalTime);
+                    }
                 }
-            }
-        }while(cursor.moveToNext());
+            } while (cursor.moveToNext());
+        }
         Log.v("cursor", "entry" + nr);
         entries.add(new Entry(nr, i));
         labels.add(currentLocalTime);
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        SharedPreferences.Editor editor =
+                getActivity().getSharedPreferences(getString(R.string.shared_preference), Context.MODE_PRIVATE).edit();
+        switch (buttonView.getId()) {
+            case R.id.mobileDataSwitch:
+                editor.putBoolean(getString(R.string.mobile_def), isChecked);
+                editor.apply();
+                break;
+            case R.id.batterySwitch:
+                editor.putBoolean(getString(R.string.battery_def), isChecked);
+                editor.apply();
+                break;
+        }
+
+    }
 }

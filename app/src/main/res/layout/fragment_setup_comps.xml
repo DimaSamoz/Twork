@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".SetupActivity"
     android:orientation="vertical"
-    android:weightSum="1"
-    android:gravity="center_vertical">
+    android:weightSum="1">
 
 
     <TextView
@@ -17,16 +16,20 @@
         android:text="Select computations that you want to contribute to"
         android:id="@+id/add_comps_title"
         android:gravity="center"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="333dp"
+        android:layout_height="match_parent"
         android:id="@+id/comps_list_view"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="20dp"
         android:choiceMode="multipleChoiceModal"
-        android:layout_weight="0.41" />
+        android:layout_weight="0.41"
+        android:layout_below="@+id/add_comps_title"
+        android:layout_above="@+id/next_button2" />
 
     <Button
         android:layout_width="wrap_content"
@@ -34,5 +37,7 @@
         android:text="Next"
         android:id="@+id/next_button2"
         android:layout_gravity="center_horizontal"
-        android:nestedScrollingEnabled="false" />
-</LinearLayout>
+        android:nestedScrollingEnabled="false"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

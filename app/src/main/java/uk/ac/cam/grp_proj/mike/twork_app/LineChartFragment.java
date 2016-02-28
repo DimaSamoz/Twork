@@ -76,8 +76,6 @@ public class LineChartFragment extends Fragment {
         TworkDBHelper db = TworkDBHelper.getHelper(getContext());
         Cursor cursor = db.readDataFromJobTable();
         int indexTime = cursor.getColumnIndex(TworkDBHelper.TABLE_JOB_START_TIME);
-        db.addJob(new Random().nextInt(), 123, 231,System.currentTimeMillis(),344343,4324334);
-        db.addJob(new Random().nextInt(), 1423, 231,System.currentTimeMillis(),344343,4324334);
         Log.v("index", "" + indexTime);
         int i = 0;
         int nr = 0;

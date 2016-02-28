@@ -30,4 +30,6 @@
     <string name="loc_def">locationDefault</string>
     <string name="context_remove">Remove</string>
     <string name="context_pause">Pause</string>
+    <string name="title_activity_add_location">Add new charging point</string>
+    <string name="batt_lim">batteryLimit</string>
 </resources>
