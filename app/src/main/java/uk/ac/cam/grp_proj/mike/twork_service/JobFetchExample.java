@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,6 +28,7 @@ public class JobFetchExample {
     private static final String TAG = "JobFetchExample";
     private static long timeout = 1000;
     private static int retries = 256;
+    private static final Charset charset = Charset.forName("UTF-8");
 
     public static void doJob(CompService context) throws InterruptedException {
         String hostURL = "http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000/";
@@ -38,6 +40,7 @@ public class JobFetchExample {
                 WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                 WifiInfo info = manager.getConnectionInfo();
                 String mac = info.getMacAddress();
+                Log.i(TAG, mac);
 
                 JSONObject req = new JSONObject();
                 req.accumulate("message", "available");
@@ -100,7 +103,7 @@ public class JobFetchExample {
                 //Parse the JSON describing the job
                 InputStream in = jobCon.getInputStream();
                 StringWriter writer = new StringWriter();
-                IOUtils.copy(in, writer, StandardCharsets.UTF_8);
+                IOUtils.copy(in, writer, charset);
                 String str = writer.toString();
 
                 try {
@@ -118,6 +121,8 @@ public class JobFetchExample {
                     //Set up input/output for job
                     InputStream jobInput = dataCon.getInputStream();
                     ByteArrayOutputStream jobOutput = new ByteArrayOutputStream();
+
+                    Log.i(TAG, "Streams created");
 
                     //Run the job
                     //codeToRun.invoke(o, jobInput, jobOutput);
