@@ -75,7 +75,7 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
 
 
             vh.name.setText(comp.getName());
-            vh.description.setText(comp.getDescription());
+            vh.description.setText(comp.getTopics());
 
             vh.checkBox.setTag(position);
             vh.checkBox.setChecked(checkedState[position]);
@@ -150,8 +150,9 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
 
         SetupDefaultsFragment setupDefaultsFragment = new SetupDefaultsFragment();
         getActivity().getSupportFragmentManager().beginTransaction() // TODO fix animation
-                .setCustomAnimations(R.anim.fade_in, R.anim.exit_to_left)
+                .setCustomAnimations(R.anim.fade_in, R.anim.exit_to_left, R.anim.enter_from_right, R.anim.fade_out)
                 .replace(R.id.setup_fragment_container, setupDefaultsFragment)
+                .addToBackStack("Computations")
                 .commit();
     }
 
@@ -162,10 +163,9 @@ public class SetupCompsFragment extends Fragment implements View.OnClickListener
 
         for (Computation comp :
                 selected) {
-            db.addComputation(comp.getId(), comp.getName(), comp.getDescription(), comp.getTopics(), TworkDBHelper.COMP_STATUS_ACTIVE, System.currentTimeMillis(), 0);
+            db.addComputation(comp.getId(), comp.getName(), comp.getDescription(), comp.getTopics(), TworkDBHelper.COMP_STATUS_ACTIVE);
             Log.i("SQLite", "added" + comp.getName());
         }
-        CompService.updateComps();
     }
 
 }

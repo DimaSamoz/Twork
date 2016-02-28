@@ -42,5 +42,5 @@
         android:id="@+id/next_button1"
         android:layout_gravity="center_horizontal"
         android:nestedScrollingEnabled="false"
-        android:enabled="false" />
+        android:enabled="true" />
 </LinearLayout>

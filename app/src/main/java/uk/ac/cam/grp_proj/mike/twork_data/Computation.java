@@ -10,33 +10,27 @@ import java.util.List;
  * Created by Dima on 06/02/16.
  */
 public class Computation {
-    private static List<Computation> allComps;
     private String id;
     private String name;
     private String description;
     private String topics;
     private String status;
-    private Integer startTime;
-    private Integer endTime;
 
-    public Computation(String id, String name, String description, String topics, String status, Integer startTime, Integer endTime) {
+    public Computation(String id, String name, String description, String topics, String status) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.topics = topics;
         this.status = status;
-        this.startTime = startTime;
-        this.endTime = endTime;
     }
 
-    public static void removeComp(String name) {
-        for (Computation comp :
-                allComps) {
-            if (comp.getName().equals(name)) {
-                allComps.remove(comp);
-                break;
-            }
-        }
+    public Computation(String id) {
+        // Mock computation to check for equality
+        this.id = id;
+        this.name = "";
+        this.description = "";
+        this.topics = "";
+        this.status = "";
     }
 
     public static List<String> getCompNames(List<Computation> comps) {
@@ -58,8 +52,6 @@ public class Computation {
         values.put(TworkDBHelper.TABLE_COMPUTATION_DESC, description);
         values.put(TworkDBHelper.TABLE_COMPUTATION_TOPICS, topics);
         values.put(TworkDBHelper.TABLE_COMPUTATION_STATUS, status);
-        values.put(TworkDBHelper.TABLE_COMPUTATION_START_TIME, startTime);
-        values.put(TworkDBHelper.TABLE_COMPUTATION_END_TIME, endTime);
 
 
         db.update(
@@ -99,11 +91,20 @@ public class Computation {
         this.status = status;
     }
 
-    public Integer getStartTime() {
-        return startTime;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Computation that = (Computation) o;
+
+        return !(id != null ? !id.equals(that.id) : that.id != null);
+
     }
 
-    public Integer getEndTime() {
-        return endTime;
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

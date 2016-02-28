@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity
             // We've bound to CompService, cast the IBinder and get CompService instance
             CompService.CompBinder binder = (CompService.CompBinder) service;
             mService = binder.getService();
+
             Log.i("Service", "bound");
             mBound = true;
         }
@@ -161,6 +162,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public boolean isRunning() {
+        return mService != null && mService.shouldBeRunning();
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(final MenuItem item) {
@@ -213,7 +218,7 @@ public class MainActivity extends AppCompatActivity
                             .commit();
                 }
             }
-        }, 200);
+        }, 250);
 
 
 

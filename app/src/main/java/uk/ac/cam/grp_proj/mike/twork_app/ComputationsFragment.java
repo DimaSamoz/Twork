@@ -111,7 +111,6 @@ public class ComputationsFragment extends ListFragment {
                 Log.i("comp", "remove");
                 Computation toRemove = selectedComps.get(info.position);
                 TworkDBHelper.getHelper(getContext()).removeComputation(toRemove);
-                CompService.updateComps();
                 selectedComps.remove(toRemove);
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, Computation.getCompNames(selectedComps));
                 setListAdapter(adapter);

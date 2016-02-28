@@ -7,8 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by laura on 01/02/16.
@@ -28,20 +30,14 @@ public class TworkDBHelper extends SQLiteOpenHelper {
     public static final String TABLE_COMPUTATION_DESC = "computation_description";
     public static final String TABLE_COMPUTATION_TOPICS = "computation_topics";
     public static final String TABLE_COMPUTATION_STATUS = "computation_status";
-    public static final String TABLE_COMPUTATION_START_TIME = "computation_start_time";
-    public static final String TABLE_COMPUTATION_END_TIME = "computation_end_time";
 
     public static final String TABLE_JOB_ID = "_id";
     public static final String TABLE_JOB_COMPUTATION_ID = "job_computation_id";
-    public static final String TABLE_JOB_DURATION = "job_duration";
     public static final String TABLE_JOB_START_TIME = "job_start_time";
-    public static final String TABLE_JOB_NUMBER_OF_BYTES_SENT = "job_number_of_bytes_sent";
-    public static final String TABLE_JOB_NUMBER_OF_BYTES_ANALYSED = "job_number_of_bytes_analysed";
 
     public static final String COMP_STATUS_ACTIVE = "active";
     public static final String COMP_STATUS_WAITING = "waiting";
     public static final String COMP_STATUS_COMPLETE = "complete";
-    public static final String COMP_STATUS_ERROR = "error";
 
     // Creating the db and tables
     private static final String SQL_CREATE_ENTRIES_COMPUTATION_TABLE =
@@ -50,18 +46,13 @@ public class TworkDBHelper extends SQLiteOpenHelper {
                     TABLE_COMPUTATION_NAME + " TEXT," +
                     TABLE_COMPUTATION_DESC + " TEXT, " +
                     TABLE_COMPUTATION_TOPICS + " TEXT, " +
-                    TABLE_COMPUTATION_STATUS + " TEXT," +
-                    TABLE_COMPUTATION_START_TIME + " DATETIME," +
-                    TABLE_COMPUTATION_END_TIME + " DATETIME" + " );";
+                    TABLE_COMPUTATION_STATUS + " TEXT" +" );";
 
     private static final String SQL_CREATE_ENTRIES_JOB_TABLE =
             "CREATE TABLE " + TABLE_JOB_TABLE_NAME + " (" +
                     TABLE_JOB_ID + " TEXT PRIMARY KEY, " +
-                    TABLE_JOB_COMPUTATION_ID + " INTEGER, " +
-                    TABLE_JOB_DURATION + " INTEGER, " +
-                    TABLE_JOB_START_TIME + " DATETIME, " +
-                    TABLE_JOB_NUMBER_OF_BYTES_SENT + " INTEGER," +
-                    TABLE_JOB_NUMBER_OF_BYTES_ANALYSED + " INTEGER" + " );";
+                    TABLE_JOB_COMPUTATION_ID + " TEXT, " +
+                    TABLE_JOB_START_TIME + " DATETIME " + " );";
 
     private TworkDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -93,8 +84,7 @@ public class TworkDBHelper extends SQLiteOpenHelper {
     }
 
     // Add computation to computation table
-    public void addComputation(String id,String name, String desc, String topics, String status,
-                               long startTime, long endTime) {
+    public void addComputation(String id,String name, String desc, String topics, String status) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -104,32 +94,24 @@ public class TworkDBHelper extends SQLiteOpenHelper {
         values.put(TABLE_COMPUTATION_DESC,desc);
         values.put(TABLE_COMPUTATION_TOPICS,topics);
         values.put(TABLE_COMPUTATION_STATUS,status);
-        values.put(TABLE_COMPUTATION_START_TIME,startTime);
-        values.put(TABLE_COMPUTATION_END_TIME, endTime);
 
         db.insert(TABLE_COMPUTATION_TABLE_NAME, null, values);
     }
 
-    public void addComputation(Computation comp) {
-        addComputation(comp.getId(), comp.getName(), comp.getDescription(), comp.getTopics(), comp.getStatus(), comp.getStartTime(), comp.getEndTime());
-    }
-
     public void removeComputation(Computation comp) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_COMPUTATION_TABLE_NAME, TABLE_COMPUTATION_ID + "= '" + comp.getId() + "'", null );
+        db.delete(TABLE_COMPUTATION_TABLE_NAME, TABLE_COMPUTATION_ID + "= '" + comp.getId() + "'", null);
     }
 
     // Add job to job table
-    public void addJob(int jobId, int computationId, long duration, long startTime,
-                       long numberOfBytesSent, long numberOfBytesAnalysed) {
+    public void addJob(long jobId, String computationId, long startTime) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(TABLE_JOB_ID, jobId);
         values.put(TABLE_JOB_COMPUTATION_ID, computationId);
-        values.put(TABLE_JOB_DURATION, duration);
         values.put(TABLE_JOB_START_TIME, startTime);
-        values.put(TABLE_JOB_NUMBER_OF_BYTES_SENT, numberOfBytesSent);
-        values.put(TABLE_JOB_NUMBER_OF_BYTES_ANALYSED, numberOfBytesAnalysed);
+
+        Log.i("job_add", computationId + startTime);
 
         db.insert(TABLE_JOB_TABLE_NAME, null, values);
     }
@@ -140,6 +122,28 @@ public class TworkDBHelper extends SQLiteOpenHelper {
 
     public List<Computation> getSelectedComps() {
         return queryComputations(TABLE_COMPUTATION_STATUS + " <> '" + COMP_STATUS_COMPLETE + "'");
+    }
+
+    public Map<String, Integer> getJobCounts() {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String jobQuery =
+                "SELECT "+ TABLE_COMPUTATION_NAME +", COUNT("+ TABLE_JOB_ID +") FROM " + TABLE_COMPUTATION_TABLE_NAME + ", " + TABLE_JOB_TABLE_NAME + " WHERE " + TABLE_COMPUTATION_ID + " = " + TABLE_JOB_COMPUTATION_ID + ";";
+
+        Cursor cursor = db.rawQuery(jobQuery, null);
+
+        Map<String, Integer> jobCounts = new HashMap<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                String compName = cursor.getString(0);
+                int jobCount = cursor.getInt(1);
+                jobCounts.put(compName, jobCount);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        return jobCounts;
     }
 
     // Returns a list of computations based on the query
@@ -158,13 +162,11 @@ public class TworkDBHelper extends SQLiteOpenHelper {
             do {
                 // Create new computation from the record
                 Computation comp = new Computation(
-                        cursor.getString(0),
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getString(3),
-                        cursor.getString(4),
-                        cursor.getInt(5),
-                        cursor.getInt(6)
+                        cursor.getString(0), // id
+                        cursor.getString(1), // name
+                        cursor.getString(2), // description
+                        cursor.getString(3), // topics
+                        cursor.getString(4)  // status
                 );
 
                 comps.add(comp);

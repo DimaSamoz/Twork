@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:key="preferences">
     <PreferenceCategory
         android:title="Battery"
@@ -8,18 +9,18 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="use_battery"
-            android:summaryOn="Use battery for computation"
-            android:summaryOff="Do computations only while charging"
+            android:summary="Perform work while phone is not charging"
             android:shouldDisableView="true"
             android:title="Use battery"/>
-            <!--android:layout="@layout/pref_item"-->
+            <!--android:layout="@layout/list_comps"/>-->
 
         <ListPreference
             android:key="battery_limit"
-            android:title="Set minimum battery limit"
+            android:title="Set battery limit"
             android:summary="%s"
             android:entries="@array/battery_limits"
             android:entryValues="@array/battery_limits_ids"/>
+            <!--app:layout="@layout/pref_item"/>-->
 
     </PreferenceCategory>
 
@@ -31,22 +32,9 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="use_data"
-            android:summaryOn="Use mobile data if there's no WiFi"
-            android:summaryOff="Do computations only using WiFi"
+            android:summary="Continue work if there is no WiFi"
             android:shouldDisableView="true"
             android:title="Use mobile data" />
-
-        <!-- NOTE: EditTextPreference accepts EditText attributes. -->
-        <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
-        <EditTextPreference
-            android:capitalize="words"
-            android:defaultValue="xddf"
-            android:inputType="textCapWords"
-            android:key="example_text"
-            android:maxLines="1"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="sbsfbsf" />
 
     </PreferenceCategory>
 
@@ -57,23 +45,24 @@
 
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="use_battery"
-            android:summary="Do computation only while charging"
+            android:key="use_location"
+            android:summary="Use current location to optimise performance"
             android:shouldDisableView="true"
-            android:title="Use battery" />
+            android:title="Use location services" />
 
-        <!-- NOTE: EditTextPreference accepts EditText attributes. -->
-        <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
-        <EditTextPreference
-            android:capitalize="words"
-            android:defaultValue="xddf"
-            android:inputType="textCapWords"
-            android:key="example_text"
-            android:maxLines="1"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="sbsfbsf" />
+        <PreferenceScreen
+            android:key="charging_stations_screen"
+            android:title="Charging points"
+            android:persistent="false"
+            android:summary="Locations where the phone can be charged if needed">
 
+            <Preference
+                android:key="add_loc"
+                android:title="Add new charging point"
+                android:summary="Select location where phone can be charged"
+                android:icon="@drawable/ic_add_black_24dp" />
+
+        </PreferenceScreen>
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -81,7 +70,13 @@
         android:icon="@drawable/ic_schedule_24dp"
         android:key="scheduling">
 
-
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="use_scheduling"
+            android:summaryOn="Using location to optimise performance"
+            android:summaryOff="Not using location services"
+            android:shouldDisableView="true"
+            android:title="Enable scheduling" />
 
     </PreferenceCategory>
 

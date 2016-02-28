@@ -83,7 +83,8 @@
                     style="?android:attr/textAppearanceMedium"
                     android:id="@+id/locationSwitch"
                     android:layout_marginBottom="12dp"
-                    android:layout_weight="4.79"/>
+                    android:layout_weight="4.79"
+                    android:enabled="false" />
 
             </LinearLayout>
 
@@ -99,7 +100,7 @@
                     android:text="New ToggleButton"
                     android:id="@+id/toggleButton"
                     android:layout_gravity="center"
-                    android:textOff="Paused"
+                    android:textOff="Stopped"
                     android:textOn="Running"
                     android:singleLine="true"
                     android:minHeight="100dp"
