@@ -2,6 +2,7 @@ package uk.ac.cam.grp_proj.mike.twork_service;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
@@ -11,6 +12,7 @@ public class PrimeComputationCode implements ComputationCode {
     private long startNumber;
     private long finishNumber;
     private long factor = 0;
+    private static final Charset charset = Charset.forName("UTF-8");
 
 
     //Expect input of the form
@@ -45,7 +47,7 @@ public class PrimeComputationCode implements ComputationCode {
         //0 means no factor found
         String result = Long.toString(factor);
         try {
-            output.write(result.getBytes(StandardCharsets.UTF_8));
+            output.write(result.getBytes(charset));
         } catch(Exception e) {
             throw new RuntimeException("PrimeComputationCode failed to package result");
         }

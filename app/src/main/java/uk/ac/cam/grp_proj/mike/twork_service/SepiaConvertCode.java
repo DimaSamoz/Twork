@@ -38,20 +38,15 @@ public class SepiaConvertCode implements ComputationCode {
 
                 int gray = (red + green + blue) / 3;
 
-                red = green = blue = gray;
-                red += sepiaDepth * 2;
-                green += sepiaDepth;
-                blue -= sepiaIntensity;
+                red = coerceByte(gray + sepiaDepth * 2);
+                green = coerceByte(gray + sepiaDepth);
+                blue = coerceByte(gray - sepiaIntensity);
 
-                red = coerceByte(red);
-                green = coerceByte(green);
-                blue = coerceByte(blue);
-
-                mimg.setPixel(j, i, gray);
+                mimg.setPixel(j, i, Color.rgb(red, green, blue));
             }
         }
 
-        mimg.compress(Bitmap.CompressFormat.PNG, 100, output);
+        mimg.compress(Bitmap.CompressFormat.JPEG, 100, output);
     }
 
     private int coerceByte(int x) {

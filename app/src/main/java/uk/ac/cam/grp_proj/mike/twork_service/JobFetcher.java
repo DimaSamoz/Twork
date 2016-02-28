@@ -3,6 +3,7 @@ package uk.ac.cam.grp_proj.mike.twork_service;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Debug;
 import android.util.Log;
 
 import org.apache.commons.io.IOUtils;
@@ -16,22 +17,21 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Random;
+import java.util.HashSet;
+import java.util.Set;
 
-import uk.ac.cam.grp_proj.mike.twork_data.Computation;
 import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 
 public class JobFetcher {
     private static final String TAG = "JobFetcher";
     private static long timeout = 1000;
     private static int retries = 256;
+    private static final Charset charset = Charset.forName("UTF-8");
 
     public static void doJob(CompService context) throws InterruptedException {
         String hostURL = "http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000/";
-        TworkDBHelper db = TworkDBHelper.getHelper(context.getBaseContext());
-
 
         //Send GET /available
         HttpURLConnection con = null;
@@ -40,6 +40,7 @@ public class JobFetcher {
                 WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                 WifiInfo info = manager.getConnectionInfo();
                 String mac = info.getMacAddress();
+                Log.i(TAG, mac);
 
                 JSONObject req = new JSONObject();
                 req.accumulate("message", "available");
@@ -69,7 +70,7 @@ public class JobFetcher {
         String cookie = con.getHeaderField("Set-Cookie");
 
 
-        while (context.shouldBeRunning() && !context.isPaused()) {
+        while (context.shouldBeRunning()) {
 
             /*
              * Complete fetch and execute to run on device.
@@ -102,7 +103,7 @@ public class JobFetcher {
                 //Parse the JSON describing the job
                 InputStream in = jobCon.getInputStream();
                 StringWriter writer = new StringWriter();
-                IOUtils.copy(in, writer, StandardCharsets.UTF_8);
+                IOUtils.copy(in, writer, charset);
                 String str = writer.toString();
 
                 try {
@@ -121,13 +122,10 @@ public class JobFetcher {
                     InputStream jobInput = dataCon.getInputStream();
                     ByteArrayOutputStream jobOutput = new ByteArrayOutputStream();
 
+                    Log.i(TAG, "Streams created");
+
                     //Run the job
                     //codeToRun.invoke(o, jobInput, jobOutput);
-
-                    // Select only jobs the user is subscribed to
-                    List<Computation> activeComps = db.getActiveComps();
-
-                    if (!activeComps.contains(new Computation(functionName))) continue;
 
                     // We're not supporting class loading, so the SecurityManager is not needed.
                     //SecurityManager oldSM = System.getSecurityManager();
@@ -152,9 +150,6 @@ public class JobFetcher {
                             // TODO: maybe should send an explicit fail response
                             continue;
                     }
-
-                    db.addJob(jobID, functionName, System.currentTimeMillis());
-
                     //System.setSecurityManager(oldSM);
 
                     //Get the output from the job

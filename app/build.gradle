@@ -6,24 +6,22 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.android.support:support-v4:23.1.1'
- //   compile 'com.facebook.android:facebook-android-sdk:4.6.0'
+    //   compile 'com.facebook.android:facebook-android-sdk:4.6.0'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
-    compile files('libs/commons-io-2.4.jar')
     compile files('libs/json-20151123.jar')
-//    compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
+    //    compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
     compile 'com.github.PhilJay:MPAndroidChart:v2.0.9'
     compile 'com.android.support:preference-v7:23.1.0'
-
+    compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
 }
 
 
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
-
     defaultConfig {
         applicationId "uk.ac.cam.grp_proj.mike.twork"
-        minSdkVersion 19
+        minSdkVersion 17
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -33,6 +31,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
     }
 }
 
