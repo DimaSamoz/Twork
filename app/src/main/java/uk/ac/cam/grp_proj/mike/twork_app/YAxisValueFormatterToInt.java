@@ -22,7 +22,7 @@ public class YAxisValueFormatterToInt implements ValueFormatter {
     @Override
     public String getFormattedValue(float value) {
         // write your logic here
-       // if ((value - (int(value)) )
+       // if ((value - (int(value)))
         return mFormat.format(value); // e.g. append a dollar-sign
     }
 }
