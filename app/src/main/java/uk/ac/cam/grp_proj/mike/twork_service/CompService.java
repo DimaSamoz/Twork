@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,8 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
     public static final String COMP_PAUSED = "computation_pausd";
     public static final String COMP_RESUMED = "computation resumed";
     private ConnectivityManager cm;
+
+    private static final Charset charset = Charset.forName("UTF-8");
 
     public CompService() {
     }
@@ -249,7 +252,7 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
                 //Parse the JSON describing the job
                 InputStream in = jobCon.getInputStream();
                 StringWriter writer = new StringWriter();
-                IOUtils.copy(in, writer, StandardCharsets.UTF_8);
+                IOUtils.copy(in, writer, charset);
 
                 retString =  writer.toString();
             } catch (IOException e) {
