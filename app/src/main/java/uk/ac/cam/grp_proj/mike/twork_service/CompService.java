@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.os.*;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -78,6 +79,7 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
                 boolean enoughCharge = batteryLimit < percentage;
 
 
+
                 if (!paused) {
                     if (onlyViaWiFi && !isWifi()) {
                         pauseComputation("No WiFi connection available");
@@ -85,7 +87,7 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
                         pauseComputation("No internet connection");
                     } else if (onlyWhileCharging && !isCharging) {
                         pauseComputation("Phone is not charging");
-                    } else if (!onlyWhileCharging && !enoughCharge) {
+                    } else if (!onlyWhileCharging && !enoughCharge && !isCharging) {
                         pauseComputation("Charge is below battery limit");
                     }
                     if (paused) {
@@ -94,14 +96,11 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
                     }
                 } else {
                     boolean connectionCorrect =
-                            (onlyViaWiFi && isWifi()) || (!onlyViaWiFi && isOnline());
+                            isWifi() || (!onlyViaWiFi && isOnline());
                     boolean chargeCorrect =
-                            (onlyWhileCharging && isCharging) || (!onlyWhileCharging && enoughCharge);
+                            isCharging || (!onlyWhileCharging && enoughCharge);
 
-                    if (    (onlyWhileCharging && isCharging && connectionCorrect) ||
-                            (!onlyWhileCharging && chargeCorrect && connectionCorrect) ||
-                            (onlyViaWiFi && isWifi() && chargeCorrect) ||
-                            (!onlyViaWiFi && connectionCorrect && chargeCorrect)) {
+                    if ((chargeCorrect && connectionCorrect)) {
                         resumeComputation();
                         Intent resumedIntent = new Intent(COMP_RESUMED);
                         LocalBroadcastManager.getInstance(CompService.this).sendBroadcast(resumedIntent);
@@ -121,6 +120,7 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
 
 
         sharedPrefs.registerOnSharedPreferenceChangeListener(this);
+
         onlyWhileCharging = !sharedPrefs.getBoolean(getString(R.string.battery_def), true);
 
         batteryLimit = sharedPrefs.getInt(getString(R.string.batt_lim), 60) / (float) 100;
@@ -140,6 +140,8 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
             onlyWhileCharging = !sharedPreferences.getBoolean(getString(R.string.battery_def), true);
         } else if (key.equals(getString(R.string.mobile_def))) {
             onlyViaWiFi = !sharedPreferences.getBoolean(getString(R.string.mobile_def), true);
+        } else if (key.equals(getString(R.string.batt_lim))) {
+            batteryLimit = sharedPreferences.getInt(getString(R.string.batt_lim), 60) / (float) 100;
         }
     }
 
@@ -195,9 +197,8 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
                 createNotification("Tworking...", "Computation running")
         );
 
+        paused = false;
         shouldBeRunning = true;
-        final TworkDBHelper db = TworkDBHelper.getHelper(this);
-
 
         thread = new Thread(new Runnable() {
             @Override
