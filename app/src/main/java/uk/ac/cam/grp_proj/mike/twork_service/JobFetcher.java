@@ -48,9 +48,17 @@ public class JobFetcher {
                 JSONObject req = new JSONObject();
                 req.accumulate("message", "available");
                 req.accumulate("phone-id", mac);
+
                 URL availableURL = new URL(hostURL + "available");
                 con = (HttpURLConnection) availableURL.openConnection();
-                con.connect();
+                con.setRequestMethod("POST");
+                con.setRequestProperty("content-type", "application/octet-stream");
+                con.setDoOutput(true);
+
+                OutputStream osw = con.getOutputStream();
+                osw.write(req.toString().getBytes());
+                osw.close();
+
                 Log.i(TAG, "Available response: " + con.getResponseCode());
                 break;
             }
