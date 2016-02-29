@@ -108,7 +108,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 int maxNum = 10;
                 Random rGen = new Random();
-                int lim = rGen.nextInt(maxNum);
+                int lim = 3 + rGen.nextInt(maxNum - 3);
 
                 for (int i = 0; i < lim; i++) {
                     int jobLim = rGen.nextInt(100);
