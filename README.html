@@ -1,0 +1,91 @@
+<h1>Twork – Android Application</h1>
+
+<p>This repository is the Android Studio project for the Twork application.
+It's written in Java and XML using the Android SDK.</p>
+
+<h2>Installation instructions</h2>
+
+<p>Requirements:</p>
+
+<ul>
+<li>A phone running Android 4.2 Jelly Bean or later.</li>
+<li>Optionally, Android Studio to open the project.</li>
+</ul>
+
+<p>Procedure:</p>
+
+<ul>
+<li>Upload the <code>app/Twork.apk</code> file to your Android device and install by tapping on the file.</li>
+</ul>
+
+<h2>Code structure</h2>
+
+<h3>Configuration and dependencies:</h3>
+
+<ul>
+<li><code>build.gradle</code> contains the dependencies for the project.</li>
+</ul>
+
+<h3>Code files</h3>
+
+<p>The folder <code>/app/src/main/java/uk/ac/cam/grp_proj/mike</code> contains three packages with the Java code files. These make up the three main components of the app: the user-side interface, the database and the service.</p>
+
+<h4><code>twork_app</code></h4>
+
+<p>Contains the files that manage the user interface.
+* Activities: the major, disjoint components of the user experience: Splash Activity (the entry point to the app), Setup Activity (a one-time setup process), Main Activity (contains the home screen and different menus) and Detail Activity (displaying details of computations). Transitioning between activities happens via Intents.
+* Fragments: dynamic interface components, loosely corresponding to screens in the UI. Transitioning between them happens via FragmentTransitions.</p>
+
+<h4><code>twork_data</code></h4>
+
+<p>Contains the SQLite database implementation which keeps track of the computations and jobs and communicates with the UI as well as the service.
+* <code>TworkDBHelper</code>: a singleton helper class for the database with auxiliary methods to help modifying and querying the database.
+* <code>Computation</code>: the in-app representation of a Computation, maps to a single record in the <code>computation</code> table.</p>
+
+<h4><code>twork_service</code></h4>
+
+<p>Contains the implementation of the Android background service and all the client-side classes that perform the computations. Includes code for Prime Computation, Greyscale and Sepia effects, and a filter that does nothing.</p>
+
+<h3>Resource files</h3>
+
+<p>The folder <code>/app/src/main/res</code> contains the resource files for the application, mainly written in XML.</p>
+
+<h4><code>layout</code></h4>
+
+<p>Every screen in the application needs to have a specific layout which is "inflated" when the screen is shown. This folder contains the XML files for the activity and fragment layouts. A common design pattern in Android development is to have two files for each Activity layout: one describing the static elements (e.g. toolbar at the top of the screen) and the other describing the content, which is included in the main layout. Moreover, the <code>content</code> file usually has a container for a fragment, and the fragments can be dynamically swapped in and out of this container.</p>
+
+<h4><code>drawable</code> and <code>mipmap</code></h4>
+
+<p>These folders contains the graphical assets of the application. Most of the vector icons are saved as <code>.xml</code> files with the point coordinates, but some of the icons are bitmap images. The <code>mipmap</code> folder contains the application icon in several different sizes to accomodate different screen resolutions.</p>
+
+<h4><code>values</code></h4>
+
+<p>This folder contains literal values for most of the parameters used in the application, as well as the style declarations for the UI. It is a common design practice and makes changing text used in many different places straightforward (e.g. localisation). We weren't very strict on this approach so the code and layout files contain many literal values without resource references – localisation wasn't a priority for us, and this is easily fixed using automated tools.</p>
+
+<h4>Other folders</h4>
+
+<p>The rest of the folders contain other files describing the layouts and values used in the application. For example, <code>menu</code> contains the list of menu elements in the navigation bar and context menus.</p>
+
+<h2>Improvements</h2>
+
+<p>Although we are generally happy with the result, there are a few additions and improvements that could have been made if we had more time. Most of these didn't make it into the final report because at the time we couldn't know what we could or could not implement until the submission deadline.</p>
+
+<h4>Technical</h4>
+
+<ul>
+<li>Although Android Studio does offer integration with the Android UI testing framework, we didn't start using it from day one and later decided that retrofitting it would take a lot of time, while not providing obvious benefits over manual trial-and-error. Time permitting, we would have done formal UI testing as well, but at the start we didn't even know that such a thing exists.</li>
+<li>The code is a bit sloppy at times (inconsistent naming and commenting, code smells, etc.) – again, this can be improved with time.</li>
+</ul>
+
+<h4>Functional</h4>
+
+<ul>
+<li>One of the main components that we had to take out is location services: although proper code files have been written, we couldn't get the Google Maps API authorisation working, and without that it is very difficult to develop and test this functionality. </li>
+<li>We also had difficulties in creating a proper Settings screen and in the end decided to include settings in the initial setup and provide the users the opportunity to redo that setup process. In the end, there weren't enough proper customisations to warrant a separate settings screen, but with more development our initial aim could be achieved.</li>
+<li>It would improve the user experience if the application gave visual feedback on job computations – the UI is quite static for now and the user cannot really know if anything is happening without looking at the logs.</li>
+<li>All in all, we are satisfied with the user interface, but there is still a lot that can be done to make it more dynamic and visually pleasing, following the Android Material Design guidelines.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<p>&copy; 2016 Laura Nechita (redls), James Wood (laMudri), Dmitrij Szamozvancev (DimaSamoz)</p>
