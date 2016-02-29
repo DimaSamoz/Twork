@@ -19,7 +19,7 @@ android {
     buildToolsVersion "23.0.2"
     defaultConfig {
         applicationId "uk.ac.cam.grp_proj.mike.twork"
-        minSdkVersion 19
+        minSdkVersion 17
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
