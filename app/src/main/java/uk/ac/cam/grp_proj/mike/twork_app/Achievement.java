@@ -1,9 +1,13 @@
 package uk.ac.cam.grp_proj.mike.twork_app;
 
+import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +17,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.ShareOpenGraphAction;
+import com.facebook.share.model.ShareOpenGraphContent;
+import com.facebook.share.model.ShareOpenGraphObject;
+import com.facebook.share.widget.ShareDialog;
+
 import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 
 /**
  * Created by laura on 04/02/16.
  */
-public class ImageAdapter extends BaseAdapter {
+public class Achievement extends BaseAdapter {
     // references to our images
     private Integer[] mThumbIds = {
             R.drawable.ic_grade_24dp, R.drawable.ic_grade_24dp,
@@ -37,7 +48,7 @@ public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private long numberOfJobs = 0;
 
-    public ImageAdapter(Context c) {
+    public Achievement(Context c) {
         mContext = c;
     }
 
@@ -60,6 +71,7 @@ public class ImageAdapter extends BaseAdapter {
             TextView textView = (TextView) grid.findViewById(R.id.textView1);
             imageView = (ImageView)grid.findViewById(R.id.imageView1);
             textView.setText(name[position]);
+            textView.setGravity(Gravity.CENTER_HORIZONTAL);
             imageView.setImageResource(mThumbIds[position]);
             addDataEntries();
             if (numberOfJobs >= values[position]) imageView.setColorFilter(Color.parseColor("#FFEB3B"));
@@ -70,15 +82,25 @@ public class ImageAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View v) {
-                // TODO Make a random message appear: Congrats if the achievement is yellow and
-                // Keep working if it is grey
                 if (numberOfJobs >= values[position]) {
-                    if (values[position] > 1) Toast.makeText(v.getContext(), "Congratulations! You have computed " +
-                            values[position] + " jobs", Toast.LENGTH_SHORT).show();
-                    else Toast.makeText(v.getContext(), "Congratulations! You have computed " +
-                            values[position] + " job", Toast.LENGTH_SHORT).show();
-                }else
-                    Toast.makeText(v.getContext(), "Not there yet. Keep tworking!", Toast.LENGTH_SHORT).show();
+                    String obj_title;
+                    if (numberOfJobs == 1) {
+                        obj_title = "1 Job Completed!";
+                    } else {
+                        obj_title = values[position] + " Jobs Completed!";
+                    }
+                    Uri imageUri = Uri.parse("http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000/assets/twork_icon.jpg");
+
+                    ShareLinkContent content = new ShareLinkContent.Builder()
+                            .setContentUrl(Uri.parse("http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000/"))
+                            .setContentTitle(obj_title)
+                            .setContentDescription("Twork is a platform for distributed computation. Try it out now!")
+                            .setImageUrl(imageUri)
+                            .build();
+
+                    ShareDialog.show((Activity) mContext, content);
+
+                } else Toast.makeText(v.getContext(), "Not there yet. Keep tworking!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -103,7 +125,7 @@ public class ImageAdapter extends BaseAdapter {
         cursor.moveToFirst();
         do {
             numberOfJobs++;
-        }while(cursor.moveToNext());
+        } while(cursor.moveToNext());
         Log.d("Number of jobs", " "  + numberOfJobs);
     }
 }

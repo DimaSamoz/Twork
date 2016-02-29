@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * Created by laura on 11/02/16.
  */
-public class LineChartFragment extends Fragment {
+public class StatisticsFragment extends Fragment {
 
     private LineChart lineChart;
     private ArrayList<Entry> lineChartEntries;
@@ -56,12 +56,12 @@ public class LineChartFragment extends Fragment {
         //Line Chart
         lineChart = (LineChart) view.findViewById(R.id.lineChart);
         lineChartEntries = new ArrayList<>();
-        lineChartLabels = new ArrayList<String>();
+        lineChartLabels = new ArrayList<>();
 
         //Bar Chart
         barChart = (BarChart) view.findViewById(R.id.barChart);
         barChartEntries = new ArrayList<>();
-        barChartLabels = new ArrayList<String>();
+        barChartLabels = new ArrayList<>();
 
         addLineDataEntries();
         setUpLineChart();
@@ -103,7 +103,6 @@ public class LineChartFragment extends Fragment {
     private void addLineDataEntries() {
         Cursor cursor = db.readDataFromJobTable();
         int indexTime = cursor.getColumnIndex(TworkDBHelper.TABLE_JOB_START_TIME);
-        Log.v("index", "" + indexTime);
         int i = 0;
         int nr = 0;
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -113,13 +112,11 @@ public class LineChartFragment extends Fragment {
                 long value = Long.parseLong(cursor.getString(indexTime));
 
                 String localTime = formatter.format(new Date(value));
-                Log.v("time from table", "date: " + localTime);
-                Log.v("time from table", "value: " + value);
+
                 if (localTime.equals(currentLocalTime)) {
                     nr++;
                 } else {
                     if (currentLocalTime != null) {
-                        Log.v("cursor", "entry" + nr);
                         lineChartEntries.add(new Entry(nr, i));
                         lineChartLabels.add(currentLocalTime);
                         i++;
@@ -129,8 +126,6 @@ public class LineChartFragment extends Fragment {
                 }
             } while (cursor.moveToNext());
         }
-        Log.v("final", "entry" + nr);
-        Log.v("final", "entry " + currentLocalTime);
         if (currentLocalTime == null) currentLocalTime = formatter.format(new Date());
         lineChartEntries.add(new Entry(nr, i));
         lineChartLabels.add(currentLocalTime);
@@ -141,7 +136,6 @@ public class LineChartFragment extends Fragment {
         List<Computation> computationList = db.getActiveComps();
         Map<String, Integer> map = db.getJobCounts();
         int i = 0;
-        Log.v("barchart", "map: " + map.size());
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
             barChartEntries.add(new BarEntry(entry.getValue(),i));
@@ -160,8 +154,9 @@ public class LineChartFragment extends Fragment {
         BarData data = new BarData(barChartLabels,dataset);
         barChart.setData(data);
         barChart.setDrawGridBackground(false);
+        barChart.setGridBackgroundColor(android.R.color.transparent);
         barChart.setHorizontalScrollBarEnabled(true);
-        barChart.setVisibleXRange(3);
+        barChart.setVisibleXRange(5);
         barChart.getAxisRight().setEnabled(false);
         barChart.getAxisLeft().setTextColor(Color.WHITE);
         barChart.getAxisLeft().setValueFormatter(new YAxisValueFormatterToInt());

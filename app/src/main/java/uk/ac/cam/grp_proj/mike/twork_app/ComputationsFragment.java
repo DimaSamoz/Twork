@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -21,7 +20,6 @@ import java.util.List;
 
 import uk.ac.cam.grp_proj.mike.twork_data.Computation;
 import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
-import uk.ac.cam.grp_proj.mike.twork_service.CompService;
 
 /**
  * Created by Dima on 28/01/16.
@@ -42,7 +40,6 @@ public class ComputationsFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        listView = getListView();
 
         FloatingActionButton fab = (FloatingActionButton) getView().findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -58,12 +55,15 @@ public class ComputationsFragment extends ListFragment {
             }
         });
 
-        // TODO Temporary hardcoded values
+        listView = getListView();
+
         selectedComps = TworkDBHelper.getHelper(getContext()).getSelectedComps();
         List<String> selectedCompNames = Computation.getCompNames(selectedComps);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, selectedCompNames);
         setListAdapter(adapter);
+
+        markPaused();
 
         registerForContextMenu(listView);
 
@@ -80,6 +80,19 @@ public class ComputationsFragment extends ListFragment {
 
     }
 
+    private void markPaused() {
+
+        listView.post(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < selectedComps.size(); i++) {
+                    if (selectedComps.get(i).getStatus().equals(TworkDBHelper.COMP_STATUS_PAUSED)) {
+                        getListView().getChildAt(i).setAlpha(0.5f);
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     public void onResume() {
@@ -87,6 +100,7 @@ public class ComputationsFragment extends ListFragment {
         // Set title
         ((MainActivity) getActivity()).exitedMenu();
         getActivity().setTitle("Computations");
+
     }
 
     @Override
@@ -101,20 +115,26 @@ public class ComputationsFragment extends ListFragment {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
-            case R.id.pause_comp:
-                Log.i("comp", "pause");
-                Computation toPause = selectedComps.get(info.position);
-                toPause.setStatus(TworkDBHelper.COMP_STATUS_WAITING);
-                toPause.flushToDatabase(TworkDBHelper.getHelper(getContext()));
+            case R.id.pause_resume_comp:
+                Computation target = selectedComps.get(info.position);
+                String status = target.getStatus();
+                if (status.equals(TworkDBHelper.COMP_STATUS_ACTIVE)) {
+                    target.setStatus(TworkDBHelper.COMP_STATUS_PAUSED);
+                    info.targetView.setAlpha(0.5f);
+                } else if (status.equals(TworkDBHelper.COMP_STATUS_PAUSED)) {
+                    target.setStatus(TworkDBHelper.COMP_STATUS_ACTIVE);
+                    info.targetView.setAlpha(1);
+                }
+                target.flushToDatabase(TworkDBHelper.getHelper(getContext()));
                 return true;
             case R.id.remove_comp:
-                Log.i("comp", "remove");
                 Computation toRemove = selectedComps.get(info.position);
                 TworkDBHelper.getHelper(getContext()).removeComputation(toRemove);
                 selectedComps.remove(toRemove);
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, Computation.getCompNames(selectedComps));
                 setListAdapter(adapter);
                 ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+                markPaused();
                 return true;
             default:
                 return super.onContextItemSelected(item);

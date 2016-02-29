@@ -20,8 +20,4 @@ public class SetupActivity extends AppCompatActivity {
         transaction.add(R.id.setup_fragment_container, siFragment).commit();
 
     }
-//
-//    @Override
-//    public void onBackPressed() {
-//    }
 }

@@ -14,8 +14,6 @@
         android:id="@+id/textView9"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:layout_above="@+id/linearLayout3"
-        android:layout_centerHorizontal="true"
         android:layout_marginBottom="15dp" />
 
 
@@ -23,8 +21,6 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignWithParentIfMissing="false"
-        android:layout_centerInParent="true"
         android:id="@+id/linearLayout3">
 
         <LinearLayout
@@ -137,9 +133,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginBottom="20dp"
-            android:id="@+id/mob_pref"
-            android:layout_below="@+id/loc_charging"
-            android:layout_centerHorizontal="true">
+            android:id="@+id/mob_pref">
 
             <TextView
                 android:layout_width="0dp"
@@ -174,8 +168,7 @@
         android:layout_height="50dp"
         android:layout_marginBottom="20dp"
         android:id="@+id/loc_pref"
-        android:visibility="visible"
-        android:layout_centerInParent="true">
+        android:visibility="visible">
 
         <TextView
             android:layout_width="0dp"
@@ -227,7 +220,5 @@
         android:layout_height="wrap_content"
         android:text="Finish"
         android:id="@+id/next_button3"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_below="@+id/linearLayout3"
-        android:layout_centerHorizontal="true" />
+        android:layout_gravity="center_horizontal|bottom" />
 </LinearLayout>

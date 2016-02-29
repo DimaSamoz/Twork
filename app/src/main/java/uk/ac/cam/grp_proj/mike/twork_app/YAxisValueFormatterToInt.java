@@ -16,7 +16,7 @@ public class YAxisValueFormatterToInt implements ValueFormatter {
     private DecimalFormat mFormat;
 
     public YAxisValueFormatterToInt() {
-        mFormat = new DecimalFormat("###,###,##"); // use one decimal
+        mFormat = new DecimalFormat("###,###,###"); // use one decimal
     }
 
     @Override

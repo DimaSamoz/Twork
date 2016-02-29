@@ -11,8 +11,7 @@ android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="205dp"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="0.04"
-        android:backgroundTintMode="add">
+        android:layout_weight="0.04">
 
         <TextView
             android:layout_width="wrap_content"
@@ -21,7 +20,7 @@ android:orientation="vertical"
             android:text="Twork"
             android:id="@+id/textView16"
             android:layout_gravity="center_horizontal|bottom"
-            android:textSize="60dp"
+            android:textSize="60sp"
             android:fontFamily="sans-serif-light"
             android:layout_marginBottom="30dp"
             android:alpha="0.8" />
@@ -55,7 +54,6 @@ android:orientation="vertical"
         android:id="@+id/redo_setup"
         android:layout_gravity="center_horizontal"
         android:layout_weight="0.04"
-        android:layout_marginTop="10dp"
-        android:onClick="redoSetup" />
+        android:layout_marginTop="10dp" />
 
 </LinearLayout>

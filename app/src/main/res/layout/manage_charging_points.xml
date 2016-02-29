@@ -54,7 +54,5 @@
         android:layout_height="wrap_content"
         android:text="Finish"
         android:id="@+id/next_button3"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_below="@+id/linearLayout3"
-        android:layout_centerHorizontal="true" />
+        android:layout_gravity="center_horizontal|bottom" />
 </LinearLayout>

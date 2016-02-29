@@ -17,6 +17,10 @@ import android.widget.TextView;
 
 import com.facebook.appevents.AppEventsLogger;
 
+import java.util.Random;
+
+import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
+
 public class SplashActivity extends AppCompatActivity {
 
     private ImageView logo;
@@ -28,12 +32,12 @@ public class SplashActivity extends AppCompatActivity {
         boolean firstLaunch = sharedPref.getBoolean(getString(R.string.first_launch), true);
         Intent i;
 
-//        logo.setAnimation(null);
-
         if (firstLaunch) {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(getString(R.string.first_launch), false); // change this to TRUE and negate the if condition for one launch to see the setup screen every time
             editor.apply();
+
+            addMockJobs();
 
             i = new Intent(getApplicationContext(), SetupActivity.class);
 
@@ -62,10 +66,7 @@ public class SplashActivity extends AppCompatActivity {
         anim.setRepeatCount(Animation.INFINITE);
         anim.setDuration(7000);
 
-// Start animating the image
         logo.startAnimation(anim);
-
-// Later.. stop the animation
 
         TextView txt = (TextView) findViewById(R.id.title);
         Typeface font = Typeface.createFromAsset(getAssets(), "Museo 100.otf");
@@ -98,5 +99,27 @@ public class SplashActivity extends AppCompatActivity {
 
         // Logs 'app deactivate' App Event.
         AppEventsLogger.deactivateApp(this);
+    }
+
+    // Add some number of mock jobs to fill up the graph
+    private void addMockJobs() {
+        Thread addJobs = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int maxNum = 10;
+                Random rGen = new Random();
+                int lim = rGen.nextInt(maxNum);
+
+                for (int i = 0; i < lim; i++) {
+                    int jobLim = rGen.nextInt(100);
+                    String compId = "" + rGen.nextInt(10);
+                    for (int j = 0; j < jobLim; j++) {
+                        TworkDBHelper.getHelper(SplashActivity.this).addJob(rGen.nextInt(), "" + compId, System.currentTimeMillis());
+                    }
+                }
+            }
+        });
+
+        addJobs.start();
     }
 }

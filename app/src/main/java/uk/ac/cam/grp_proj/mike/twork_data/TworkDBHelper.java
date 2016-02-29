@@ -36,7 +36,7 @@ public class TworkDBHelper extends SQLiteOpenHelper {
     public static final String TABLE_JOB_START_TIME = "job_start_time";
 
     public static final String COMP_STATUS_ACTIVE = "active";
-    public static final String COMP_STATUS_WAITING = "waiting";
+    public static final String COMP_STATUS_PAUSED = "paused";
     public static final String COMP_STATUS_COMPLETE = "complete";
 
     // Creating the db and tables
@@ -111,8 +111,6 @@ public class TworkDBHelper extends SQLiteOpenHelper {
         values.put(TABLE_JOB_COMPUTATION_ID, computationId);
         values.put(TABLE_JOB_START_TIME, startTime);
 
-        Log.i("job_add", computationId + startTime);
-
         db.insert(TABLE_JOB_TABLE_NAME, null, values);
     }
 
@@ -132,17 +130,14 @@ public class TworkDBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(jobQuery, null);
 
         Map<String, Integer> jobCounts = new HashMap<>();
-        int i = 0;
         if (cursor.moveToFirst()) {
             do {
-                i++;
                 String compName = cursor.getString(0);
                 int jobCount = cursor.getInt(1);
                 jobCounts.put(compName, jobCount);
             } while (cursor.moveToNext());
         }
         cursor.close();
-        Log.v("Map size",": "+ i);
         return jobCounts;
     }
 

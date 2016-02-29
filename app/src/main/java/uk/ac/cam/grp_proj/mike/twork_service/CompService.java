@@ -54,7 +54,7 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
     private static final String TAG = "JobFetcher";
     public static final String HOST_URL =
             "http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000/";
-    public static final String COMP_PAUSED = "computation_pausd";
+    public static final String COMP_PAUSED = "computation_paused";
     public static final String COMP_RESUMED = "computation resumed";
     private ConnectivityManager cm;
 
@@ -90,10 +90,11 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
                         LocalBroadcastManager.getInstance(CompService.this).sendBroadcast(pausedIntent);
                     }
                 } else {
-                    boolean connectionCorrect = (onlyViaWiFi && isWifi())
-                                            || (!onlyViaWiFi && isOnline());
-                    boolean chargeCorrect = (onlyWhileCharging && isCharging)
-                                         || (!onlyWhileCharging && enoughCharge);
+                    boolean connectionCorrect =
+                            (onlyViaWiFi && isWifi()) || (!onlyViaWiFi && isOnline());
+                    boolean chargeCorrect =
+                            (onlyWhileCharging && isCharging) || (!onlyWhileCharging && enoughCharge);
+
                     if (    (onlyWhileCharging && isCharging && connectionCorrect) ||
                             (!onlyWhileCharging && chargeCorrect && connectionCorrect) ||
                             (onlyViaWiFi && isWifi() && chargeCorrect) ||
@@ -306,16 +307,16 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
         String[] compNames = {"DreamLab", "SETI@home", "Galaxy Zoo", "RNA World", "Malaria Control", "Leiden Classical", "GIMPS", "Electric Sheep", "DistributedDataMining", "Compute For Humanity"};
 
         String[] compDescs = {
-                "Breast, ovarian, prostate and pancreatic cancer",
-                "Search for extraterrestrial life by analyzing specific radio frequencies emanating from space",
-                "Classifies galaxy types from the Sloan Digital Sky Survey",
-                "Uses bioinformatics software to study RNA structure",
-                "Simulate the transmission dynamics and health effects of malaria",
-                "General classical mechanics for students or scientists",
-                "Searches for Mersenne primes of world record size",
-                "Fractal flame generation",
-                "Research in the various fields of data analysis and machine learning, such as stock market prediction and analysis of medical data",
-                "Generating cryptocurrencies to sell for money to be donated to charities"
+                "Breast, ovarian, prostate and pancreatic cancer. Mock computation.",
+                "Search for extraterrestrial life by analyzing specific radio frequencies emanating from space. Mock computation.",
+                "Classifies galaxy types from the Sloan Digital Sky Survey. Mock computation.",
+                "Uses bioinformatics software to study RNA structure. Mock computation.",
+                "Simulate the transmission dynamics and health effects of malaria. Mock computation.",
+                "General classical mechanics for students or scientists. Mock computation.",
+                "Searches for Mersenne primes of world record size. Mock computation.",
+                "Distributed fractal flame generation and rendering. Mock computation.",
+                "Research in the various fields of data analysis and machine learning, such as stock market prediction and analysis of medical data. Mock computation.",
+                "Generating cryptocurrencies to sell for money to be donated to charities. Mock computation."
         };
 
         String[] compAreas = {

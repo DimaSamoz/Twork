@@ -181,7 +181,6 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
         int indexTime = cursor.getColumnIndex(TworkDBHelper.TABLE_JOB_START_TIME);
 //        db.addJob(new Random().nextInt(),44, 2313,System.currentTimeMillis(),344343,4324334);
 //        db.addJob(new Random().nextInt(),43, 2313,System.currentTimeMillis(),344343,4324334);
-        Log.v("index", "" + indexTime);
         int i = 0;
         int nr = 0;
         String currentLocalTime = "00:00:00";
@@ -190,31 +189,25 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
        // String currentLocalTime = formatter2.format(new Date());
         String todayDay = formatter.format(new Date(System.currentTimeMillis()));
         cursor.moveToFirst();
-        Log.v("Today", "" + todayDay);
 
         if (cursor.moveToFirst()) {
             do {
                 long value = Long.parseLong(cursor.getString(indexTime));
                 String localTime = formatter.format(new Date(value));
-                Log.v("localTime", "" + localTime);
                 if (localTime.equals(todayDay)) {
                     String localHour = formatter2.format(new Date(value));
-                    Log.v("localTime", "" + localHour);
                     if ((localHour.substring(0, 2)).equals((currentLocalTime.substring(0, 2)))) {
                         nr++;
                     } else {
                         entries.add(new Entry(nr, i));
                         labels.add(currentLocalTime.substring(0, 2));
                         i++;
-                        Log.v("Numbers", "" + nr);
                         nr = 1;
                         currentLocalTime = localHour;
-                        Log.v("currentLocalTime", "" + currentLocalTime);
                     }
                 }
             } while (cursor.moveToNext());
         }
-        Log.v("cursor", "entry" + nr);
         entries.add(new Entry(nr, i));
         labels.add(currentLocalTime.substring(0,2));
     }

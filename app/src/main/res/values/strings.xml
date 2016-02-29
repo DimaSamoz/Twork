@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Twork</string>
     <string name="app_title">Twork</string>
-    <string name="facebook_app_id">1147703765242376</string>
+    <string name="facebook_app_id">755992537863976</string>
     <string name="title_activity_home_screen">Home</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -11,25 +11,15 @@
     <string name="shared_preference">SharedPreference</string>
     <string name="first_launch">FirstLaunch</string>
 
-    <string-array name="Settings">
-        <item>Internet</item>
-        <item>Battery</item>
-        <item>Location</item>
-        <item>Scheduling</item>
-        <item>Account</item>
-        <item>Computations</item>
-        <item>About</item>
-    </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_setup">Setup</string>
     <string name="user_name">user_name</string>
     <string name="mobile_def">mobileDataDefault</string>
     <string name="battery_def">batteryDefault</string>
     <string name="loc_def">locationDefault</string>
     <string name="context_remove">Remove</string>
-    <string name="context_pause">Pause</string>
+    <string name="context_pause">Pause/Resume</string>
     <string name="title_activity_add_location">Add new charging point</string>
     <string name="batt_lim">batteryLimit</string>
 </resources>

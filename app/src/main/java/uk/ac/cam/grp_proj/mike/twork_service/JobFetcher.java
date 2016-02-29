@@ -20,8 +20,10 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import uk.ac.cam.grp_proj.mike.twork_data.Computation;
 import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 
 public class JobFetcher {
@@ -32,6 +34,7 @@ public class JobFetcher {
 
     public static void doJob(CompService context) throws InterruptedException {
         String hostURL = "http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000/";
+        TworkDBHelper db = TworkDBHelper.getHelper(context.getBaseContext());
 
         //Send GET /available
         HttpURLConnection con = null;
@@ -127,6 +130,11 @@ public class JobFetcher {
                     //Run the job
                     //codeToRun.invoke(o, jobInput, jobOutput);
 
+                    List<Computation> activeComps = db.getActiveComps();
+
+                    if (!activeComps.contains(new Computation(functionName))) continue;
+
+
                     // We're not supporting class loading, so the SecurityManager is not needed.
                     //SecurityManager oldSM = System.getSecurityManager();
                     //HashSet<String> filePaths = new HashSet<>();
@@ -150,6 +158,10 @@ public class JobFetcher {
                             // TODO: maybe should send an explicit fail response
                             continue;
                     }
+
+                    db.addJob(jobID, functionName, System.currentTimeMillis());
+
+
                     //System.setSecurityManager(oldSM);
 
                     //Get the output from the job

@@ -129,30 +129,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.main, menu);
-//
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//
-////        noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
     public void startComputation() {
         if (mBound) {
             mService.startComputation();
@@ -196,7 +172,7 @@ public class MainActivity extends AppCompatActivity
 
                 } else if (id == R.id.nav_stats) {
                     setTitle("Statistics");
-                    fragment = new LineChartFragment();
+                    fragment = new StatisticsFragment();
 
                 } else if (id == R.id.nav_achievements) {
                     setTitle("Achievements");
@@ -206,13 +182,7 @@ public class MainActivity extends AppCompatActivity
                     setTitle("About");
                     fragment = new SettingsFragment();
 
-                } /*else if (id == R.id.nav_share) {
-                    setTitle("Share");
-                    fragment = new SocialFragment();
-
-                } else if (id == R.id.nav_send) {
-
-                }*/
+                }
 
                 if (!visible.getClass().equals(fragment.getClass())) {
                     getSupportFragmentManager().beginTransaction()
