@@ -87,11 +87,23 @@ public class ComputationsFragment extends ListFragment {
             public void run() {
                 for (int i = 0; i < selectedComps.size(); i++) {
                     if (selectedComps.get(i).getStatus().equals(TworkDBHelper.COMP_STATUS_PAUSED)) {
-                        getListView().getChildAt(i).setAlpha(0.5f);
+                        getViewByPosition(i, listView).setAlpha(0.5f);
                     }
                 }
             }
         });
+    }
+
+    public View getViewByPosition(int pos, ListView listView) {
+        final int firstListItemPosition = listView.getFirstVisiblePosition();
+        final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
+
+        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
+            return listView.getAdapter().getView(pos, null, listView);
+        } else {
+            final int childIndex = pos - firstListItemPosition;
+            return listView.getChildAt(childIndex);
+        }
     }
 
     @Override
@@ -100,7 +112,6 @@ public class ComputationsFragment extends ListFragment {
         // Set title
         ((MainActivity) getActivity()).exitedMenu();
         getActivity().setTitle("Computations");
-
     }
 
     @Override

@@ -1,9 +1,11 @@
 package uk.ac.cam.grp_proj.mike.twork_service;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Debug;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import org.apache.commons.io.IOUtils;
@@ -31,6 +33,9 @@ public class JobFetcher {
     private static long timeout = 1000;
     private static int retries = 256;
     private static final Charset charset = Charset.forName("UTF-8");
+    public static final String JOB_RECEIVED = "job_received";
+    public static final String JOB_DONE = "job_done";
+    public static final String COMP_NAME = "computation_name_fetch";
 
     public static void doJob(CompService context) throws InterruptedException {
         String hostURL = "http://ec2-52-36-182-104.us-west-2.compute.amazonaws.com:9000/";
@@ -127,6 +132,11 @@ public class JobFetcher {
 
                     Log.i(TAG, "Streams created");
 
+                    Intent jobReceivedIntent = new Intent(JOB_RECEIVED);
+                    jobReceivedIntent.putExtra(COMP_NAME, functionName);
+
+                    LocalBroadcastManager.getInstance(context.getBaseContext()).sendBroadcast(jobReceivedIntent);
+
                     //Run the job
                     //codeToRun.invoke(o, jobInput, jobOutput);
 
@@ -161,6 +171,9 @@ public class JobFetcher {
 
                     db.addJob(jobID, functionName, System.currentTimeMillis());
 
+                    Intent jobDoneIntent = new Intent(JOB_DONE);
+                    jobDoneIntent.putExtra(COMP_NAME, functionName);
+                    LocalBroadcastManager.getInstance(context.getBaseContext()).sendBroadcast(jobDoneIntent);
 
                     //System.setSecurityManager(oldSM);
 

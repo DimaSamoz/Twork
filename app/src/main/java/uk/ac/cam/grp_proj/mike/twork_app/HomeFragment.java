@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -28,6 +29,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
+import org.w3c.dom.Text;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +39,7 @@ import java.util.List;
 import uk.ac.cam.grp_proj.mike.twork_data.Computation;
 import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
 import uk.ac.cam.grp_proj.mike.twork_service.CompService;
+import uk.ac.cam.grp_proj.mike.twork_service.JobFetcher;
 
 
 /**
@@ -52,6 +56,7 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
     private LineChart chart;
     private ArrayList<Entry> entries;
     private ArrayList<String> labels;
+    List<Computation> activeComps;
 
     private BroadcastReceiver compStatusReceiver = new BroadcastReceiver() {
         @Override
@@ -65,6 +70,44 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
             }
         }
     };
+
+    private BroadcastReceiver jobStatusReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            String compID = intent.getStringExtra(JobFetcher.COMP_NAME);
+            if (action.equals(JobFetcher.JOB_RECEIVED)) {
+                updateRow(compID, false);
+            } else if (action.equals(JobFetcher.JOB_DONE)) {
+                updateRow(compID, true);
+            }
+        }
+    };
+
+    private void updateRow(final String compID, final boolean jobDone) {
+
+        listView.post(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < activeComps.size(); i++) {
+                    if (activeComps.get(i).getId().equals(compID)) {
+                        String compName = activeComps.get(i).getName();
+                        TextView item = ((TextView) getViewByPosition(i, listView));
+                        if (!jobDone) {
+                            // job is received
+                            String newText = compName + " | Job received";
+                            item.setText(newText);
+                        } else {
+                            // job is done - received text needs to be removed
+                            String newText = compName + " | Job done";
+                            item.setText(newText);
+
+                        }
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -112,11 +155,17 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
     @Override
     public void onResume() {
         super.onResume();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(CompService.COMP_PAUSED);
-        intentFilter.addAction(CompService.COMP_RESUMED);
+        IntentFilter compStatusFilter = new IntentFilter();
+        compStatusFilter.addAction(CompService.COMP_PAUSED);
+        compStatusFilter.addAction(CompService.COMP_RESUMED);
 
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(compStatusReceiver, intentFilter);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(compStatusReceiver, compStatusFilter);
+
+        IntentFilter jobStatusFilter = new IntentFilter();
+        jobStatusFilter.addAction(JobFetcher.JOB_RECEIVED);
+        jobStatusFilter.addAction(JobFetcher.JOB_DONE);
+
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(jobStatusReceiver, jobStatusFilter);
 
         addDataEntries();
         setUpChart();
@@ -137,9 +186,10 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
         super.onActivityCreated(savedInstanceState);
 
         TworkDBHelper db = TworkDBHelper.getHelper(getContext());
-        List<String> comps = Computation.getCompNames(db.getActiveComps());
+        activeComps = db.getActiveComps();
+        List<String> compNames = Computation.getCompNames(activeComps);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, comps);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, compNames);
         listView.setAdapter(adapter);
 
         compToggle.setChecked(((MainActivity) getActivity()).isRunning());
@@ -186,7 +236,7 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
         String currentLocalTime = "00:00:00";
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss");
-       // String currentLocalTime = formatter2.format(new Date());
+        // String currentLocalTime = formatter2.format(new Date());
         String todayDay = formatter.format(new Date(System.currentTimeMillis()));
         cursor.moveToFirst();
 
@@ -209,7 +259,7 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
             } while (cursor.moveToNext());
         }
         entries.add(new Entry(nr, i));
-        labels.add(currentLocalTime.substring(0,2));
+        labels.add(currentLocalTime.substring(0, 2));
     }
 
     @Override
@@ -227,5 +277,17 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
                 break;
         }
 
+    }
+
+    public View getViewByPosition(int pos, ListView listView) {
+        final int firstListItemPosition = listView.getFirstVisiblePosition();
+        final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
+
+        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
+            return listView.getAdapter().getView(pos, null, listView);
+        } else {
+            final int childIndex = pos - firstListItemPosition;
+            return listView.getChildAt(childIndex);
+        }
     }
 }
