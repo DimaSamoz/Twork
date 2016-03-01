@@ -111,7 +111,7 @@ public class TworkDBHelper extends SQLiteOpenHelper {
         values.put(TABLE_JOB_COMPUTATION_ID, computationId);
         values.put(TABLE_JOB_START_TIME, startTime);
 
-        db.insert(TABLE_JOB_TABLE_NAME, null, values);
+        db.insertWithOnConflict(TABLE_JOB_TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     public List<Computation> getActiveComps() {
