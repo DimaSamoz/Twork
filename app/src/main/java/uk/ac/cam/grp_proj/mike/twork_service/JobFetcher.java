@@ -57,7 +57,7 @@ public class JobFetcher {
                 URL availableURL = new URL(hostURL + "available");
                 con = (HttpURLConnection) availableURL.openConnection();
                 con.setRequestMethod("POST");
-                con.setRequestProperty("content-type", "application/octet-stream");
+                con.setRequestProperty("content-type", "text/plain");
                 con.setDoOutput(true);
 
                 OutputStream osw = con.getOutputStream();
