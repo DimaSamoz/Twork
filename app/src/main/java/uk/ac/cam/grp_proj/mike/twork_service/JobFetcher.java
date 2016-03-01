@@ -43,7 +43,7 @@ public class JobFetcher {
 
         //Send GET /available
         HttpURLConnection con = null;
-        for (int i = 0; i < retries; i++) {
+        for (int i = 0; i < retries && context.shouldBeRunning() && !context.isPaused(); i++) {
             try {
                 WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                 WifiInfo info = manager.getConnectionInfo();
@@ -78,7 +78,7 @@ public class JobFetcher {
         String cookie = con.getHeaderField("Set-Cookie");
 
 
-        while (context.shouldBeRunning()) {
+        while (context.shouldBeRunning() && !context.isPaused()) {
 
             /*
              * Complete fetch and execute to run on device.
@@ -135,7 +135,6 @@ public class JobFetcher {
                     Intent jobReceivedIntent = new Intent(JOB_RECEIVED);
                     jobReceivedIntent.putExtra(COMP_NAME, functionName);
 
-                    LocalBroadcastManager.getInstance(context.getBaseContext()).sendBroadcast(jobReceivedIntent);
 
                     //Run the job
                     //codeToRun.invoke(o, jobInput, jobOutput);
@@ -144,6 +143,7 @@ public class JobFetcher {
 
                     if (!activeComps.contains(new Computation(functionName))) continue;
 
+                    LocalBroadcastManager.getInstance(context.getBaseContext()).sendBroadcast(jobReceivedIntent);
 
                     // We're not supporting class loading, so the SecurityManager is not needed.
                     //SecurityManager oldSM = System.getSecurityManager();
