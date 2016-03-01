@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Debug;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -20,10 +19,7 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import uk.ac.cam.grp_proj.mike.twork_data.Computation;
 import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
@@ -57,7 +53,7 @@ public class JobFetcher {
                 URL availableURL = new URL(hostURL + "available");
                 con = (HttpURLConnection) availableURL.openConnection();
                 con.setRequestMethod("POST");
-                con.setRequestProperty("content-type", "application/octet-stream");
+                con.setRequestProperty("content-type", "text/plain");
                 con.setDoOutput(true);
 
                 OutputStream osw = con.getOutputStream();
