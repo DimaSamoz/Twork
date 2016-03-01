@@ -26,8 +26,6 @@ public class SepiaConvertCode implements ComputationCode {
 
         int width = mimg.getWidth();
         int height = mimg.getHeight();
-        int sepiaDepth = 20;
-        int sepiaIntensity = 80;
 
         for (int i = 0; i<height; i++) {
             for (int j = 0; j < width; j++) {
@@ -36,20 +34,22 @@ public class SepiaConvertCode implements ComputationCode {
                 int green = Color.green(c);
                 int blue = Color.blue(c);
 
-                int gray = (red + green + blue) / 3;
-
-                red = coerceByte(gray + sepiaDepth * 2);
-                green = coerceByte(gray + sepiaDepth);
-                blue = coerceByte(gray - sepiaIntensity);
-
-                mimg.setPixel(j, i, Color.rgb(red, green, blue));
+                mimg.setPixel(j, i, Color.rgb(
+                        coerce(.393 * red + .769 * green + .189 * blue),
+                        coerce(.349 * red + .686 * green + .168 * blue),
+                        coerce(.272 * red + .534 * green + .131 * blue)
+                ));
             }
         }
 
         mimg.compress(Bitmap.CompressFormat.JPEG, 100, output);
     }
 
-    private int coerceByte(int x) {
+    private static int coerce(double x) {
+        return coerceByte(new Double(x).intValue());
+    }
+
+    private static int coerceByte(int x) {
         if (x < 0) return 0;
         else if (x >= 256) return 255;
         else return x;
