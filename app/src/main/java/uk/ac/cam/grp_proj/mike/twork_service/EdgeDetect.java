@@ -24,6 +24,6 @@ public class EdgeDetect implements ComputationCode {
         // Get something mutable
         Bitmap mimg = image.copy(Bitmap.Config.RGB_565, true);
 
-        mimg.compress(Bitmap.CompressFormat.JPEG, 100, output);
+        mimg.compress(Bitmap.CompressFormat.JPEG, 20, output);
     }
 }
