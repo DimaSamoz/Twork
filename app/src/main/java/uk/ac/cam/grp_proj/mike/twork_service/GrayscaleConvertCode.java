@@ -39,6 +39,6 @@ public class GrayscaleConvertCode implements ComputationCode {
             }
         }
 
-        mimg.compress(Bitmap.CompressFormat.JPEG, 33, output);
+        mimg.compress(Bitmap.CompressFormat.JPEG, 50, output);
     }
 }
