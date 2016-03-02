@@ -17,6 +17,12 @@ import android.widget.TextView;
 
 import com.facebook.appevents.AppEventsLogger;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import uk.ac.cam.grp_proj.mike.twork_data.TworkDBHelper;
@@ -106,18 +112,31 @@ public class SplashActivity extends AppCompatActivity {
         Thread addJobs = new Thread(new Runnable() {
             @Override
             public void run() {
-                int maxNum = 10;
+                final long NUM_MS_IN_DAY = 86400000;
+                final long NUM_MS_IN_HOUR = 3600000;
+                long currentTime = System.currentTimeMillis() + 4 * NUM_MS_IN_HOUR;
                 Random rGen = new Random();
-                int lim = 3 + rGen.nextInt(maxNum - 3);
+                TworkDBHelper db = TworkDBHelper.getHelper(SplashActivity.this);
 
-                for (int i = 0; i < lim; i++) {
-                    int jobLim = rGen.nextInt(100);
-                    String compId = "" + rGen.nextInt(10);
-                    for (int j = 0; j < jobLim; j++) {
-                        TworkDBHelper.getHelper(SplashActivity.this).addJob(rGen.nextInt(), "" + compId, System.currentTimeMillis());
+                String[] compIDs = {"DreamLab", "SETI@home", "GalaxyZoo", "RNAWorld", "MalariaControl", "LeidenClassical", "GIMPS", "ElectricSheep", "DistributedDataMining", "ComputeForHumanity"};
+        List<String> compIDsList = Arrays.asList(compIDs);
+        Collections.shuffle(compIDsList);
+        Collections.shuffle(Arrays.asList(compIDs));
+                for (int i = 0; i < 5; i++) {
+                    int numOfJobs = 15 + rGen.nextInt(20);
+                    for (int j = 0; j < numOfJobs; j++) {
+                        db.addJob(rGen.nextLong(), compIDsList.get(i), currentTime - i * NUM_MS_IN_HOUR);
                     }
                 }
-            }
+
+                for (int i = 6; i < 10; i++) {
+                    int numOfJobs = rGen.nextInt(100);
+                    for (int j = 0; j < numOfJobs; j++) {
+                        db.addJob(rGen.nextLong(), compIDsList.get(i), currentTime - (i-5) * NUM_MS_IN_DAY);
+                    }
+                }
+
+           }
         });
 
         addJobs.start();

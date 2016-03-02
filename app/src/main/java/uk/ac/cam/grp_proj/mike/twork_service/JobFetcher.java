@@ -164,7 +164,7 @@ public class JobFetcher {
                         case "SepiaConvertCode":
                             new SepiaConvertCode().run(jobInput, jobOutput);
                             break;
-                        case "EdgeDetect":
+                        case "EdgeDetect": 
                             new EdgeDetect().run(jobInput, jobOutput);
                             break;
                         default:

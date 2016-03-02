@@ -24,6 +24,16 @@ public class EdgeDetect implements ComputationCode {
         // Get something mutable
         Bitmap mimg = image.copy(Bitmap.Config.RGB_565, true);
 
-        mimg.compress(Bitmap.CompressFormat.JPEG, 20, output);
+        // Code by Pete Houston @ Android Newbie
+
+        ConvolutionMatrix convMatrix = new ConvolutionMatrix(3);
+        convMatrix.setAll(0);
+        convMatrix.Matrix[0][0] = -2;
+        convMatrix.Matrix[1][1] = 2;
+        convMatrix.Factor = 1;
+        convMatrix.Offset = 95;
+        Bitmap processed =  ConvolutionMatrix.computeConvolution3x3(mimg, convMatrix);
+
+        processed.compress(Bitmap.CompressFormat.JPEG, 20, output);
     }
 }

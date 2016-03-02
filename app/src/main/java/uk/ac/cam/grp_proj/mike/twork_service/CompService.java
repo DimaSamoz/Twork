@@ -340,7 +340,7 @@ public class CompService extends Service implements SharedPreferences.OnSharedPr
             // Filter out already selected computations
             List<String> activeComps = Computation.getCompNames(db.getSelectedComps());
             if (!activeComps.contains(compNames[i])) {
-                serverComps.add(new Computation("" + i, compNames[i], compDescs[i], compAreas[i], null));
+                serverComps.add(new Computation(compNames[i].replace(" ", ""), compNames[i], compDescs[i], compAreas[i], null));
             }
         }
 
