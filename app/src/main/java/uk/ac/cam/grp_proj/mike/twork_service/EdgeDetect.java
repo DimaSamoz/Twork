@@ -34,6 +34,6 @@ public class EdgeDetect implements ComputationCode {
         convMatrix.Offset = 95;
         Bitmap processed =  ConvolutionMatrix.computeConvolution3x3(mimg, convMatrix);
 
-        processed.compress(Bitmap.CompressFormat.JPEG, 20, output);
+        processed.compress(Bitmap.CompressFormat.JPEG, 33, output);
     }
 }

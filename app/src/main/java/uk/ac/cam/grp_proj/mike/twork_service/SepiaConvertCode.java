@@ -42,7 +42,7 @@ public class SepiaConvertCode implements ComputationCode {
             }
         }
 
-        mimg.compress(Bitmap.CompressFormat.JPEG, 20, output);
+        mimg.compress(Bitmap.CompressFormat.JPEG, 33, output);
     }
 
     private static int coerce(double x) {
