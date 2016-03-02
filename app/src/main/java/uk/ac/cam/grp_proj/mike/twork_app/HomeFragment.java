@@ -80,6 +80,12 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
                 updateRow(compID, false);
             } else if (action.equals(JobFetcher.JOB_DONE)) {
                 updateRow(compID, true);
+
+                labels.clear();
+                entries.clear();
+                addDataEntries();
+                chart.notifyDataSetChanged();
+                chart.invalidate();
             }
         }
     };
