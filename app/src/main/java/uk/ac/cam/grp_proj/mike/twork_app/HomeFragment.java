@@ -148,8 +148,18 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
         entries = new ArrayList<>();
         labels = new ArrayList<>();
 
+        addDataEntries();
+        setUpChart();
+
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        chart.invalidate();
+
     }
 
     @Override
@@ -167,8 +177,6 @@ public class HomeFragment extends Fragment implements CompoundButton.OnCheckedCh
 
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(jobStatusReceiver, jobStatusFilter);
 
-        addDataEntries();
-        setUpChart();
     }
 
     @Override

@@ -114,7 +114,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 final long NUM_MS_IN_DAY = 86400000;
                 final long NUM_MS_IN_HOUR = 3600000;
-                long currentTime = System.currentTimeMillis() + 4 * NUM_MS_IN_HOUR;
+                long currentTime = System.currentTimeMillis();
                 Random rGen = new Random();
                 TworkDBHelper db = TworkDBHelper.getHelper(SplashActivity.this);
 
